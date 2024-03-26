@@ -1,5 +1,7 @@
-import numpy as np
+import tkinter as tk
+from PIL import Image, ImageTk
 import cv2 as cv
+import numpy as np
 from yunet import YuNet as YuNetClass
 
 # Angiv stien til din ONNX-model
@@ -16,7 +18,10 @@ model = YuNetClass(modelPath=modelPath,
 
 cap = cv.VideoCapture(0)
 
-def visualize(image, results, scale=(1.0, 1.0), box_color=(0, 255, 0), text_color=(0, 0, 255)):
+smallest_box_area = float('inf')  # Initialiser til uendeligt stort
+
+def visualize(image, results, scale=(1.0, 1.0), box_color=(0, 255, 0), text_color=(255, 255, 255)):
+    global smallest_box_area  # Declare as global to modify the variable within this function
     output = image.copy()
     scaleX, scaleY = scale
     text_scale_dynamic = 0.5  # Startværdi for dynamisk tekststørrelse
@@ -35,7 +40,7 @@ def visualize(image, results, scale=(1.0, 1.0), box_color=(0, 255, 0), text_colo
         # Opdater den mindste box_area (til at finde den "fjerneste" person)
         if box_area < smallest_box_area and box_area > 0:
             smallest_box_area = box_area
-            text_scale_dynamic = 0.5 + 5000 / max(smallest_box_area, 1)
+            text_scale_dynamic = 0.7 + 5000 / max(smallest_box_area, 1)
 
         # Definer 'conf' korrekt her. Antager at 'conf' er den sidste værdi i 'det'
         conf = det[-1]
@@ -45,7 +50,6 @@ def visualize(image, results, scale=(1.0, 1.0), box_color=(0, 255, 0), text_colo
 
         # Vis konfidensniveau med en fast skriftstørrelse
         cv.putText(output, '{:.4f}'.format(conf), (x1, y1 - 10), cv.FONT_HERSHEY_DUPLEX, conf_text_scale, text_color)
-
         if len(det) > 14:
             landmarks = det[4:14].astype(np.int32).reshape((5, 2))
             for idx, landmark in enumerate(landmarks):
@@ -54,16 +58,15 @@ def visualize(image, results, scale=(1.0, 1.0), box_color=(0, 255, 0), text_colo
                 cv.circle(output, (landmarkX, landmarkY), 2, (255, 255, 255), -1)
 
     # Tilføj "Din dynamiske tekst" med en dynamisk tekststørrelse
-    cv.putText(output, "Gustas er en bozo", (50, output.shape[0] - 50), cv.FONT_HERSHEY_SIMPLEX, text_scale_dynamic, (255, 255, 255), 2)
+    cv.putText(output, "Gustas er en bozo", (10, 30), cv.FONT_HERSHEY_SIMPLEX, text_scale_dynamic, text_color, 2)
     return output
 
-
-
-while cv.waitKey(1) < 0:
+def update_text_size():
+    global smallest_box_area  # Declare as global to access the variable
     hasFrame, frame = cap.read()
     if not hasFrame:
         print('No frames grabbed!')
-        break
+        return
 
     # Ændr størrelsen på frame til det forventede input format for modellen
     frame_resized = cv.resize(frame, (320, 320))
@@ -75,5 +78,35 @@ while cv.waitKey(1) < 0:
     # Bemærk: Du skal måske skalere op tegningen til det originale frames størrelse
     frame = visualize(frame, results, scale=(frame.shape[1] / 320, frame.shape[0] / 320))
 
-    # Vis det opdaterede frame
-    cv.imshow('YuNet Demo', frame)
+    # Opdater teksten i Tkinter
+    text_scale_dynamic = 0.7 + 5000 / max(smallest_box_area, 1)
+    canvas.itemconfig(text_id, text="Gustas er en bozo", font=("Helvetica", int(text_scale_dynamic * 20)), fill="white")  # Scale font size dynamically and set text color
+    root.after(10, update_text_size)  # Call this function again after 10 milliseconds
+
+    # Display the OpenCV window
+    cv.imshow('OpenCV Window', frame)
+    cv.waitKey(1)  # Needed to refresh OpenCV window
+
+# Tkinter GUI
+root = tk.Tk()
+root.title("Dynamic Text Size Demo")
+root.configure(bg='black')
+
+# Example image
+example_image = Image.open("img/Artwork003.jpg")
+example_image = example_image.resize((800, 600), Image.ANTIALIAS)
+example_photo = ImageTk.PhotoImage(example_image)
+
+# Create a canvas to display the example image
+canvas = tk.Canvas(root, width=800, height=600, bg='black', highlightthickness=0)
+canvas.pack()
+canvas.create_image(0, 0, anchor=tk.NW, image=example_photo)
+
+# Create text on canvas
+text_id = canvas.create_text(10, 10, anchor=tk.NW, text="Gustas er en bozo", font=("Helvetica", 20), fill="white")
+
+# Start updating the text size dynamically
+update_text_size()
+
+root.mainloop()
+
