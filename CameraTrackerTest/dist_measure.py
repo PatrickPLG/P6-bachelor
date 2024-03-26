@@ -16,46 +16,46 @@ model = YuNetClass(modelPath=modelPath,
 
 cap = cv.VideoCapture(0)
 
-def visualize(image, results, scale=(1.0, 1.0), box_color=(0, 255, 0), text_color=(0, 0, 255)):
+previous_text_scale = 0.5  # Startværdi for tekstskalaen
+
+previous_text_scale = 0.5  # Startværdi for tekstskalaen
+
+def visualize(image, results, scale=(1.0, 1.0), box_color=(0, 255, 0), text_color=(0, 0, 255), smoothing_factor=0.05):
+    global previous_text_scale
     output = image.copy()
     scaleX, scaleY = scale
-    text_scale_dynamic = 0.5  # Startværdi for dynamisk tekststørrelse
     conf_text_scale = 0.5  # Fast skriftstørrelse for konfidensniveau
-    smallest_box_area = float('inf')  # Initialiser til uendeligt stort
+    max_box_area = 0  # Til at finde den største box
 
     for det in results:
-        x1 = int(det[0] * scaleX)
-        y1 = int(det[1] * scaleY)
-        x2 = int((det[0] + det[2]) * scaleX)
-        y2 = int((det[1] + det[3]) * scaleY)
-        box_width = x2 - x1
-        box_height = y2 - y1
-        box_area = box_width * box_height
+        x1, y1, x2, y2 = [int(dim) for dim in [det[0] * scaleX, det[1] * scaleY, (det[0] + det[2]) * scaleX, (det[1] + det[3]) * scaleY]]
+        box_area = (x2 - x1) * (y2 - y1)
 
-        # Opdater den mindste box_area (til at finde den "fjerneste" person)
-        if box_area < smallest_box_area and box_area > 0:
-            smallest_box_area = box_area
-            text_scale_dynamic = 0.5 + 5000 / max(smallest_box_area, 1)
+        if box_area > max_box_area:
+            max_box_area = box_area
 
-        # Definer 'conf' korrekt her. Antager at 'conf' er den sidste værdi i 'det'
         conf = det[-1]
 
-        # Tegn bounding boxen
         cv.rectangle(output, (x1, y1), (x2, y2), box_color, 2)
-
-        # Vis konfidensniveau med en fast skriftstørrelse
         cv.putText(output, '{:.4f}'.format(conf), (x1, y1 - 10), cv.FONT_HERSHEY_DUPLEX, conf_text_scale, text_color)
 
+        # Retter anvendelsen af skalering på landmarks
         if len(det) > 14:
             landmarks = det[4:14].astype(np.int32).reshape((5, 2))
-            for idx, landmark in enumerate(landmarks):
-                landmarkX = int(landmark[0] * scaleX)
-                landmarkY = int(landmark[1] * scaleY)
+            for landmark in landmarks:
+                # Anvender korrekt skalering på landmarks
+                landmarkX, landmarkY = [int(landmark[0] * scaleX), int(landmark[1] * scaleY)]
                 cv.circle(output, (landmarkX, landmarkY), 2, (255, 255, 255), -1)
 
-    # Tilføj "Din dynamiske tekst" med en dynamisk tekststørrelse
+    # Dynamisk justering med glidende gennemsnit for smooth ændring
+    new_text_scale = 0.5 + (5000 / max(max_box_area, 1))
+    text_scale_dynamic = previous_text_scale + (new_text_scale - previous_text_scale) * smoothing_factor
+    previous_text_scale = text_scale_dynamic  # Opdaterer den globale variabel til næste frame
+
     cv.putText(output, "Gustas er en bozo", (50, output.shape[0] - 50), cv.FONT_HERSHEY_SIMPLEX, text_scale_dynamic, (255, 255, 255), 2)
+    
     return output
+
 
 
 
@@ -72,7 +72,6 @@ while cv.waitKey(1) < 0:
     results = model.infer(frame_resized)
 
     # Visualiser resultaterne på det originale frame
-    # Bemærk: Du skal måske skalere op tegningen til det originale frames størrelse
     frame = visualize(frame, results, scale=(frame.shape[1] / 320, frame.shape[0] / 320))
 
     # Vis det opdaterede frame
