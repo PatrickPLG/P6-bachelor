@@ -7,7 +7,7 @@ import cv2 as cv
 import numpy as np
 from yunet import YuNet as YuNetClass
 
-
+IPC_PIPE = "pipeId"
 while True:
     try:
         ioWrite = os.open(IPC_PIPE, os.O_WRONLY)
@@ -15,11 +15,14 @@ while True:
         break
     except:
         # Wait until Pipe B has been initialized
+        print("except")
         pass
 
 
+file_path = '/home/mosfet/Projects/P6-bachelor/CameraTrackerTest/face_detection_yunet_2023mar.onnx'
+
 # Angiv stien til din ONNX-model
-modelPath = "face_detection_yunet_2023mar.onnx"
+modelPath = file_path
 
 # Initialisér YuNet
 model = YuNetClass(modelPath=modelPath,
@@ -108,8 +111,8 @@ root.title("Dynamic Text Size Demo")
 root.configure(bg='black')
 
 # Example image
-example_image = Image.open("img/Artwork003.jpg")
-example_image = example_image.resize((800, 600), Image.ANTIALIAS)
+example_image = Image.open("/home/mosfet/Projects/P6-bachelor/CameraTrackerTest/img/Artwork003.jpg")
+example_image = example_image.resize((800, 600))
 example_photo = ImageTk.PhotoImage(example_image)
 
 # Create a canvas to display the example image
