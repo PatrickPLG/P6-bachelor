@@ -1,8 +1,22 @@
+import time
+import os
+import select
 import tkinter as tk
 from PIL import Image, ImageTk
 import cv2 as cv
 import numpy as np
 from yunet import YuNet as YuNetClass
+
+
+while True:
+    try:
+        ioWrite = os.open(IPC_PIPE, os.O_WRONLY)
+        print("Pipe B ready")
+        break
+    except:
+        # Wait until Pipe B has been initialized
+        pass
+
 
 # Angiv stien til din ONNX-model
 modelPath = "face_detection_yunet_2023mar.onnx"
@@ -80,6 +94,7 @@ def update_text_size():
 
     # Opdater teksten i Tkinter
     text_scale_dynamic = 0.7 + 5000 / max(smallest_box_area, 1)
+    os.write(ioWrite, str(text_scale_dynamic).encode('utf-8'))  # Write to Pipe
     canvas.itemconfig(text_id, text="Gustas er en bozo", font=("Helvetica", int(text_scale_dynamic * 20)), fill="white")  # Scale font size dynamically and set text color
     root.after(10, update_text_size)  # Call this function again after 10 milliseconds
 
