@@ -1,5 +1,7 @@
 import cv2
 import mediapipe as mp
+#Still not working fully
+
 
 # Initialize MediaPipe Face Mesh.
 mp_face_mesh = mp.solutions.face_mesh
@@ -84,4 +86,4 @@ cv2.destroyAllWindows()
 
 # TO DO: Create contors around eyes.
 # Create box based on contors and use it to find center point.
-# Create function that outputs coordinates of center point in comparison to landmarks. Fx. +y = up +x = right and so on
+# Create function that outputs coordinates of center point in comparison to landmarks. Fx. +y = up +x = right and so on.
