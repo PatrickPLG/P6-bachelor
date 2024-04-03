@@ -1,6 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from bson.json_util import dumps
-from mongo_connect import client
+from mongo_connect import client, upload_images_from_folder
+import gridfs
 
 app = Flask(__name__)
 print("test")
@@ -17,6 +18,15 @@ def get_data():
 
     # Convert the document to a JSON string and return it
     return dumps(document['plot'])
+
+@app.route('/upload_images', methods=['POST'])
+def upload_images():
+    db = client['artworks']
+    fs = gridfs.GridFS(db, collection="images")  # Specify the "images" collection
+
+    folder_path = r"C:\Users\pelle\Downloads\Artworks Highres\Artworks Highres"  # Use a raw string for the folder path
+    upload_images_from_folder(fs, folder_path)
+    return jsonify({'message': 'Images uploaded successfully'}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
