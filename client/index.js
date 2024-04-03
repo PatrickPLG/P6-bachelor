@@ -1,19 +1,32 @@
-const { spawn, fork } = require('child_process');
-const fs              = require('fs');
+require('./src/cleanup').Cleanup(myCleanup);
 
-const pipe = 'pipeId'
-let io = spawn('mkfifo', [pipe])
+function myCleanup() {
+    console.log('Cleaning up before exit..');
+    pipeHandler.removeAllPipes().then((res) => console.log('All pipes removed:', res));
+}
 
-io.on('exit', function() {
-    console.log('Created Pipe');
-    const fd   = fs.openSync(pipe, 'r+');
-    let ioRead = fs.createReadStream(null, { fd });
 
-    ioRead.on('data', data => {
-        console.log("til patrick"+ data.toString());
+// Prevents the program from closing instantly
+process.stdin.resume();
+
+console.log(`PID:${process.pid} App is running.\nPress CTRL+C to exit. `);
+console.log("_________________________________________________________________________________________");
+
+
+const {PipeHandler} = require('./src/pipeHandler');
+const pipeHandler = new PipeHandler();
+pipeHandler.createPipe().then( () => {
+    const readStream = pipeHandler.getFileStream()
+
+    console.log('Pipe created. Reading from pipe..');
+    readStream.on('data', (data) => {
+        console.log('Received:', data.toString());
     })
-
 })
+
+
+
+
 
 
 

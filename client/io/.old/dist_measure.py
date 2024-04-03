@@ -17,6 +17,8 @@ while True:
         # Wait until Pipe B has been initialized
         print("except")
         pass
+    finally:
+        os.close(ioWrite)
 
 
 file_path = '/home/mosfet/Projects/P6-bachelor/CameraTrackerTest/face_detection_yunet_2023mar.onnx'
