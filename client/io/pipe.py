@@ -12,6 +12,7 @@ def get_pipe():
     while True:
         try:
             pipe = os.open(path, os.O_WRONLY)
+            print('Connected to Pipe: ' + PIPE)
             break
         except OSError:
             # Wait until Pipe has been initialized
@@ -19,7 +20,6 @@ def get_pipe():
             time.sleep(1)
             pass
 
-    print('Connected!')
     return pipe
 
 

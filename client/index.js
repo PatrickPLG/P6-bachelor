@@ -18,7 +18,7 @@ const pipeHandler = new PipeHandler();
 pipeHandler.createPipe().then( () => {
     const readStream = pipeHandler.getFileStream()
 
-    console.log('Pipe created. Reading from pipe..');
+    console.log('Waiting for data..');
     readStream.on('data', (data) => {
         console.log('Received:', data.toString());
     })

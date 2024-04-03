@@ -16,6 +16,6 @@ while True:
         target = pipe.get_pipe()
         time.sleep(1)
     except KeyboardInterrupt:
-        # quit
+        print('Quitting..')
         pipe.close_pipe(target)
         sys.exit()
