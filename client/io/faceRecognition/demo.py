@@ -5,6 +5,7 @@
 # Third party copyrights are property of their respective owners.
 
 import argparse
+import json
 
 import numpy as np
 import cv2 as cv
@@ -80,7 +81,7 @@ def visualize(image, results, box_color=(0, 255, 0), text_color=(0, 0, 255), fps
 if __name__ == '__main__':
     backend_id = backend_target_pairs[args.backend_target][0]
     target_id = backend_target_pairs[args.backend_target][1]
-    started = None
+    started = False
     # Instantiate YuNet
     model = YuNet(modelPath=args.model,
                   inputSize=[320, 320],
@@ -121,6 +122,7 @@ if __name__ == '__main__':
             cv.waitKey(0)
     else: # Omit input to call default camera
         lookedAtScreenSeconds = []
+        highestFaceCount = 0
         deviceId = 0
         cap = cv.VideoCapture(deviceId)
         w = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
@@ -140,9 +142,11 @@ if __name__ == '__main__':
             tm.stop()
 
             print('{} faces detected.'.format(results.shape[0]))
-            if (results.shape[0] > 0):
+            if (results.shape[0] > 0 and started == False):
                 started = True
                 startSecond = time.perf_counter()
+                if (results.shape[0] > highestFaceCount):
+                    highestFaceCount = results.shape[0]
             elif (results.shape[0] == 0 and started == True):
                 endSecond = time.perf_counter()
                 timeSecond = endSecond - startSecond
@@ -158,4 +162,13 @@ if __name__ == '__main__':
             tm.reset()
         # Combine all seconds looked at screen
         lookedAtScreenSeconds = sum(lookedAtScreenSeconds)
+        jsonDict = {
+            "key" : "sensor_data",
+            "data" : {
+                "HighestNumberOfFacesDetected" : highestFaceCount,
+                "lookedAtScreenSeconds" : lookedAtScreenSeconds
+            }
+        }
+        jsonObj = json.dumps(jsonDict)
+        print(jsonObj)
         print('Looked at screen for {:0.4f} seconds'.format(lookedAtScreenSeconds))
