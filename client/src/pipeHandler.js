@@ -1,5 +1,7 @@
 const {spawn} = require("child_process");
 const fs = require("fs");
+
+//reads contents of the .env file which can be accessed in process.env
 require('dotenv').config();
 
 /* const fileDescriptor = fs.openSync(this.pipeid, 'r+');

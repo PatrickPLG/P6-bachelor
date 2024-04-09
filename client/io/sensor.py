@@ -9,7 +9,6 @@ x = 0
 while True:
     x = x + 1.5
     timestamp = time.time()
-
     jsonDict = {
         'timestamp': timestamp,
         'sensor_type': 'customType',
@@ -20,7 +19,6 @@ while True:
             "altitude": 0.0 + x * 0.3048
         },
     }
-
     jsonObj = json.dumps(jsonDict)
 
     try:
