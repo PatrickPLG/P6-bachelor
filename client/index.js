@@ -27,7 +27,8 @@ function startServer() {
 
 function readPipe(pipeHandler, socket) {
     pipeHandler.getFileStream().on('data', (data) => {
-        console.log('Received data from pipe:', data.toString());
+        /*console.log('Received data from pipe:', data.toString());*/
+        console.log('Received data from pipe: \n',JSON.parse(data.toString()))
         socket.emit("message", data.toString(), () => {
             console.log('Data sent to server');
         });
@@ -35,6 +36,10 @@ function readPipe(pipeHandler, socket) {
 }
 
 startServer()
+
+
+
+
 
 /*pipeHandler.createPipe().then(() => {
     const readStream = pipeHandler.getFileStream()
