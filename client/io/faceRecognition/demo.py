@@ -6,11 +6,40 @@
 
 import argparse
 import json
-
+import os
+import sys
 import numpy as np
 import cv2 as cv
 import time
 from yunet import YuNet
+import pipe
+
+
+
+target = pipe.get_pipe()
+
+def sendDataToPipe(**kwargs):
+
+    jsonDict = {
+        "key" : "sensor_data",
+        "data" : {
+        }
+    }
+    for name, data in kwargs.items():
+        jsonDict["data"][name] = data
+
+    jsonObj = json.dumps(jsonDict)
+    try:
+        pipe.write_pipe(jsonObj, target)
+    except OSError:
+        print('Failed writing pipe..')
+        print('Reconnecting..')
+        target = pipe.get_pipe()
+        time.sleep(1)
+    except KeyboardInterrupt:
+        print('Quitting..')
+        pipe.close_pipe(target)
+        sys.exit()
 
 # Check OpenCV version
 assert cv.__version__ >= "4.9.0", \
@@ -152,6 +181,15 @@ if __name__ == '__main__':
                 timeSecond = endSecond - startSecond
                 lookedAtScreenSeconds.append(timeSecond)
                 started = False
+                jsonDict = {
+                    "key" : "sensor_data",
+                    "data" : {
+                        "HighestNumberOfFacesDetected" : highestFaceCount,
+                        "lookedAtScreenInSeconds" : lookedAtScreenSeconds
+                    }
+                }
+                jsonObj = json.dumps(jsonDict)
+                sendDataToPipe(HighestNumberOfFacesDetected=highestFaceCount, lookedAtScreenInSeconds=lookedAtScreenSeconds)
 
             # Draw results on the input image
             frame = visualize(frame, results, fps=tm.getFPS())
@@ -161,6 +199,7 @@ if __name__ == '__main__':
 
             tm.reset()
         # Combine all seconds looked at screen
+        print(lookedAtScreenSeconds)
         lookedAtScreenSeconds = sum(lookedAtScreenSeconds)
         jsonDict = {
             "key" : "sensor_data",
