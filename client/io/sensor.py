@@ -10,14 +10,10 @@ while True:
     x = x + 1.5
     timestamp = time.time()
     jsonDict = {
-        'timestamp': timestamp,
-        'sensor_type': 'customType',
-        'sensor_data': {
-            "temperature": 25.0 + x * 0.1,
-            "humidity": 60.0 + x * 0.01,
-            "pressure": 1013.25 + x * 100,
-            "altitude": 0.0 + x * 0.3048
-        },
+        "temperature": 25.0 + x * 0.1,
+        "humidity": 60.0 + x * 0.01,
+        "pressure": 1013.25 + x * 100,
+        "altitude": 0.0 + x * 0.3048
     }
     jsonObj = json.dumps(jsonDict)
 

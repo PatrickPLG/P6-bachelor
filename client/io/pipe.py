@@ -4,7 +4,7 @@ import time
 from dotenv import load_dotenv
 
 load_dotenv()
-PIPE = os.getenv('PIPE_ID')
+PIPE = 'SensorOne'
 path = '../' + PIPE
 
 
