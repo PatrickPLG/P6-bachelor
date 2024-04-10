@@ -30,11 +30,12 @@ async function validateConfiguration() {
     }
 
     // Check if we have an APPLICATION_ID
-
+    console.log('Checking for application ID..');
     const applicationId = await readCredentialsFromFile()
     if (!applicationId) {
         return 'No_application_ID_found';
     }
+    console.log('Application ID found:', applicationId);
 
 
     // Add your other checks here

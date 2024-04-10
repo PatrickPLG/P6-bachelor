@@ -4,6 +4,10 @@ require('./src/cleanup').Cleanup(myCleanup);
 process.stdin.resume();
 
 
+// format data to standardized data format
+// smarter way to integrate new pipes
+// make
+
 async function main() {
     const error = await require('./src/configuration').validateConfiguration();
     if (error) {
@@ -14,10 +18,9 @@ async function main() {
     }
 
     //test send get request to server to get credentials
-
-
     startServer();
 }
+
 
 main().then(r => {
 });
