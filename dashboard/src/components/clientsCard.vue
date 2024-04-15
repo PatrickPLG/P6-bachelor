@@ -17,6 +17,27 @@ const getUsers = async () => {
 	
 }
 
+const deleteUser = async (index: number) => {
+	
+	
+	const id = users.value[index].CLIENT_ID
+	
+	console.log(id)
+	if (!id) {
+		console.error("No CLIENT_ID provided")
+		return
+	}
+	
+	const response = await axios.get('http://localhost:3001/delete-specific-user', {
+		params: {
+			appId: id
+		}
+	})
+	users.value.splice(index, 1)
+	
+	
+}
+
 onBeforeMount(() => {
 	getUsers()
 })
@@ -46,17 +67,19 @@ const input = "";
 			             :items="users"
 			             :columns="columns"
 			>
-				<template #cell(actions)>
+				<template #cell(actions)="{ rowIndex }">
 					<VaButton
 						preset="plain"
 						icon="edit"
 						disabled
-						
+					
+					
 					/>
 					<VaButton
 						preset="plain"
 						icon="delete"
 						class="ml-3"
+						@click="deleteUser(rowIndex)"
 					
 					/>
 				</template>
