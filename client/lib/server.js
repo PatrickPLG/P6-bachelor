@@ -33,13 +33,17 @@ class FrameJustWorks {
             this.startServer();
         })
     }
+	
+	register = () => {
+		this.socket.emit("register", this.configuration.credentials, () => {
+			console.log('Registered with server');
+		})
+	}
 
     startServer = () => {
          this.socket = require('socket.io-client')(socketUrl, {});
 
-        this.socket.on('connect', function () {
-            console.log('Connected to server');
-        })
+        this.socket.on('connect',this.register);
 
         console.log(`PID:${process.pid} App is running.\nPress CTRL+C to exit. `);
         console.log("_________________________________________________________________________________________");
