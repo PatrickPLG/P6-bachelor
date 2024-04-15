@@ -3,17 +3,19 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./database');
 
+
 const app = express();
 app.use(cors()); // cors is security feature needed for my html test, since it would establish a connection otherwise. idk if we need it
 const port = 3001;
-let currentApplicationId = '';
+
 
 app.get('/credentials', (req, res) => {
-    res.send(currentApplicationId);
+    const newClientId = require('uuid').v4()
+    res.send(newClientId);
 });
 
 app.get('/delete-all-users', (req, res) => {
-    db.run(`DELETE FROM users`, function(err) {
+    db.run(`DELETE FROM users`, function (err) {
         if (err) {
             console.error(err.message);
             res.status(500).send("Failed to delete users");
@@ -27,17 +29,17 @@ app.get('/delete-all-users', (req, res) => {
 app.get('/delete-specific-user', (req, res) => {
     const appId = req.query.appId;
     if (!appId) {
-        res.status(400).send("No APPLICATION_ID provided");
+        res.status(400).send("No CLIENT_ID provided");
         return;
     }
 
-    db.run(`DELETE FROM users WHERE application_id = ?`, [appId], function(err) {
+    db.run(`DELETE FROM users WHERE client_id = ?`, [appId], function (err) {
         if (err) {
             console.error(err.message);
             res.status(500).send("Failed to delete user");
         } else {
-            console.log(`User deleted with APPLICATION_ID: ${appId}`);
-            res.send(`User deleted with APPLICATION_ID: ${appId}`);
+            console.log(`User deleted with CLIENT_ID: ${appId}`);
+            res.send(`User deleted with CLIENT_ID: ${appId}`);
         }
     });
 });
@@ -60,12 +62,21 @@ io.listen(3000);
 
 io.on("connection", (socket) => {
     console.log('Client connected');
+
+
+
+
+
     socket.on('message', (msg, callback) => {
         console.log(`Data from ${socket.id}:`, msg);
-        const applicationId = msg.APPLICATION_ID;
-        currentApplicationId = applicationId;
 
-        db.get(`SELECT * FROM users WHERE application_id = ?`, [applicationId], (err, row) => {
+
+        const jsonMsg = JSON.parse(msg);
+
+
+        const clientId = jsonMsg.CLIENT_ID;
+
+        db.get(`SELECT * FROM users WHERE client_id = ?`, [clientId], (err, row) => {
             if (err) {
                 console.error(err.message);
                 return;
@@ -73,8 +84,8 @@ io.on("connection", (socket) => {
             if (row) {
                 console.log('User found:', row);
             } else {
-                console.log('User not found, adding new user with id: ', applicationId);
-                db.run(`INSERT INTO users (application_id) VALUES (?)`, [applicationId], function(err) {
+                console.log('User not found, adding new user with id: ', clientId);
+                db.run(`INSERT INTO users (CLIENT_ID) VALUES (?)`, [clientId], function (err) {
                     if (err) {
                         return console.error(err.message);
                     }
@@ -82,6 +93,7 @@ io.on("connection", (socket) => {
                 });
             }
         });
+
 
         callback();
     });

@@ -11,7 +11,7 @@ const db = new sqlite3.Database('./p6.db', (err) => {
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    application_id TEXT NOT NULL
+    CLIENT_ID TEXT NOT NULL
     )`);
 });
 
