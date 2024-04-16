@@ -9,15 +9,15 @@
 <body>
 <h1>Socket.io Test Client</h1>
 <form id="connectForm">
-    <input type="text" id="appIdInput" placeholder="Enter APPLICATION_ID" required>
-    <button type="submit">Connect with APPLICATION_ID</button>
+    <input type="text" id="appIdInput" placeholder="Enter CLIENT_ID" required>
+    <button type="submit">Connect with CLIENT_ID</button>
 </form>
 <br/>
 <br/>
 <button id="deleteAllUsersBtn" style="background-color: red; color: white">Delete All Users</button>
 <br/>
 <br/>
-<input type="text" id="specificAppIdInput" placeholder="Enter APPLICATION_ID to delete">
+<input type="text" id="specificAppIdInput" placeholder="Enter CLIENT_ID to delete">
 <button id="deleteSpecificUserBtn" style="background-color: yellow;">Delete Specific User</button>
 
 <script>
@@ -33,13 +33,14 @@
                 console.log('Disconnected existing connection');
             }
 
-            const applicationId = document.getElementById('appIdInput').value;
+            const clientId = document.getElementById('appIdInput').value;
             socket = io('http://localhost:3000');
 
+            console.log("connected to socket :))))")
             socket.on('connect', () => {
                 console.log('Connected to server');
-                socket.emit('message', {APPLICATION_ID: applicationId}, () => {
-                    console.log('Message sent with APPLICATION_ID:', applicationId);
+                socket.emit('register', {CLIENT_ID: clientId}, () => {
+                    console.log('Register event sent with CLIENT_ID:', clientId);
                 });
             });
 

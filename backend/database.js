@@ -86,6 +86,7 @@ class dbHandler {
 
     //create a new client if it doesn't exist, or return the existing client
     async registerClient(clientId) {
+        console.log("Enterred registerClient. Here is the data: " + clientId);
         // Check if client already exists
         let client = await this.getClientById(clientId);
         if (client) {

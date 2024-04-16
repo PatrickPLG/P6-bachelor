@@ -67,9 +67,36 @@ const io = new Server({
 io.listen(3000);
 
 io.on("connection", (socket) => {
-    console.log('Client connected');
+    const credentials =
 
-    socket.on('register', async (credentials, callback) => dbHandler.registerClient(credentials))
+    socket.on('register', async (credentials, callback) => {
+        try {
+            let jsonCredentials;
+            if (typeof credentials === 'string') {
+                jsonCredentials = JSON.parse(credentials);
+            } else if (typeof credentials === 'object') {
+                jsonCredentials = credentials;
+            } else {
+                throw new Error('Invalid credentials');
+            }
+
+            const clientId = jsonCredentials.CLIENT_ID;
+
+            if (!clientId) {
+                console.error('No CLIENT_ID provided');
+                callback(new Error('No CLIENT_ID provided'));
+                return;
+            }
+
+            await dbHandler.registerClient(clientId);
+            callback(null, 'Client registered successfully');
+        } catch (error) {
+            console.error('Error while registering client:', error);
+            callback(error);
+        }
+    });
+
+    //socket.on('register', async (credentials, callback) => dbHandler.registerClient(JSON.parse(credentials)))
 
     socket.on('message', (msg, callback) => {
         console.log(`Data from ${socket.id}:`, msg);
