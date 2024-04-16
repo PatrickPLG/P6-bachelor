@@ -17,8 +17,8 @@ socket.on("disconnect", () => {
 	state.connected = false;
 });
 
-socket.on("foo", (...args) => {
-	state.fooEvents.push(args);
+socket.on("update", (...args) => {
+	console.log("update");
 });
 
 socket.on("bar", (...args) => {

@@ -2,6 +2,7 @@ const {Server} = require("socket.io");
 const express = require('express');
 const cors = require('cors');
 const db = require('./database')
+const {json} = require("express");
 
 dbHandler = new db();
 
@@ -50,6 +51,16 @@ app.get('/get-all-users', (req, res) => {
     })
 });
 
+app.get('/get-all-sensor-data', (req, res) => {
+    dbHandler.getAllSensorData().then((rows) => {
+        console.log('All sensor data:', rows);
+        res.send(rows);
+    }).catch((err) => {
+        console.error(err.message);
+        res.status(500).send("Failed to get sensor data");
+    })
+})
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
     console.log(`Test af db og socket funktionalitet: http://localhost:63342/P6-bachelor/client/userTest.html?_ijt=djst3v89v1f4lbhm3jqab93no1`);
@@ -76,7 +87,7 @@ io.on("connection", (socket) => {
         const clientId = jsonMsg.CLIENT_ID;
         const sensorType = jsonMsg.sensor_type;
         const timestamp = jsonMsg.timestamp;
-        const sensorData = jsonMsg.sensor_data;
+        const sensorData = JSON.stringify(jsonMsg.sensor_data);
 
 
         dbHandler.getClientById(clientId).then(async (row) => {
@@ -84,6 +95,7 @@ io.on("connection", (socket) => {
                 console.log('User found:', row);
 
                 await dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId)
+                io.emit('update')
 
             } else {
                 await dbHandler.createClient(clientId)

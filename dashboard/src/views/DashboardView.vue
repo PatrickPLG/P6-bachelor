@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ConnectionCard from "@/components/connectionCard.vue";
 import ClientsCard from "@/components/clientsCard.vue";
+import SensorDataCard from "@/components/sensorDataCard.vue";
 </script>
 
 <template>
@@ -14,6 +15,7 @@ import ClientsCard from "@/components/clientsCard.vue";
 	<section class="dashboardCards">
 		<clients-card/>
 		<connection-card/>
+        <sensor-data-card/>
 	</section>
 </template>
 

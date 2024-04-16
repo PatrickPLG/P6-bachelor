@@ -98,6 +98,19 @@ class dbHandler {
         });
     }
 
+    async getAllSensorData() {
+        return new Promise((resolve, reject) => {
+            this.db.all(`SELECT * FROM SensorData`, (err, rows) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+    }
+
     async deleteClientById(clientId) {
         return new Promise((resolve, reject) => {
             this.db.run(

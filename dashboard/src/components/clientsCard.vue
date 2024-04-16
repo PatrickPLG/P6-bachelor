@@ -37,10 +37,10 @@ const deleteUser = async (index: number) => {
 	
 	
 }
-
+/*
 onBeforeMount(() => {
 	getUsers()
-})
+})*/
 const columns = [
 	{key: "id", sortable: true},
 	{key: "CLIENT_ID", sortable: true},
