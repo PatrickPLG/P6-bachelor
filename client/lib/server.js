@@ -71,7 +71,7 @@ class FrameJustWorks {
         const payload = {
             'CLIENT_ID': this.configuration.credentials,
             timestamp: new Date().getTime(),
-            'sensor-type': type,
+            'sensor_type': type,
             'sensor_data': JSON.parse(data),
         }
         return JSON.stringify(payload);

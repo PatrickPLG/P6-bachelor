@@ -74,9 +74,17 @@ io.on("connection", (socket) => {
         console.log(`Data from ${socket.id}:`, msg);
         const jsonMsg = JSON.parse(msg);
         const clientId = jsonMsg.CLIENT_ID;
+        const sensorType = jsonMsg.sensor_type;
+        const timestamp = jsonMsg.timestamp;
+        const sensorData = jsonMsg.sensor_data;
+
+
         dbHandler.getClientById(clientId).then(async (row) => {
             if (row) {
                 console.log('User found:', row);
+
+                await dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId)
+
             } else {
                 await dbHandler.createClient(clientId)
             }
