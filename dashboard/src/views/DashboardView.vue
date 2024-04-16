@@ -21,7 +21,7 @@ import ClientsCard from "@/components/clientsCard.vue";
 
 .logo {
 	width: 42px;
-	height: 42px;
+	height: 60px;
 }
 
 header {

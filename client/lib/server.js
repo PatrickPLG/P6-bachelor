@@ -5,9 +5,7 @@ require("dotenv").config()
 
 const socketUrl = process.env.SOCKET_URL || 'http://localhost:3000';
 
-//TODO: format data to standardized data format
-//TODO: smarter way to integrate new pipes
-//TODO: make readcredentialsfromfile async
+//TODO: fix client not starting server when no credentials are found
 class FrameJustWorks {
     constructor() {
         this.pipeHandler = new PipeHandler();

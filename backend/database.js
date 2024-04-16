@@ -1,5 +1,7 @@
 const sqlite3 = require("sqlite3").verbose();
 
+//TODO: change users table to clients
+
 class dbHandler {
   constructor() {
     this.db = new sqlite3.Database("./p6.db", (err) => {

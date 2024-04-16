@@ -9,7 +9,6 @@ const app = express();
 app.use(cors()); // cors is security feature needed for my html test, since it would establish a connection otherwise. idk if we need it
 const port = 3001;
 
-
 app.get('/credentials', (req, res) => {
     const newClientId = require('uuid').v4()
     res.send(newClientId);
