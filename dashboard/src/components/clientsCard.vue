@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {onBeforeMount, ref} from 'vue'
 import axios from 'axios'
+import ClientAddModal from './ClientAddModal.vue';
+
 
 const loading = ref(false)
 
@@ -37,6 +39,7 @@ const deleteSelectedUsers = async () => {
   for (const index of sortedIndices) {
     await deleteUser(index);
   }
+  selectedRows.value = new Set();
 };
 
 const toggleSelection = (index: number) => {
@@ -52,6 +55,8 @@ const toggleSelection = (index: number) => {
 const registerClient = async () => {
 
 }
+
+
 
 
 onBeforeMount(() => {
@@ -70,13 +75,11 @@ const input = "";
 </script>
 
 <template>
-
 	<va-card>
-
-
-		<va-card-title>
-			Clients
-		</va-card-title>
+    <va-card-title>
+      Clients
+      <ClientAddModal />
+    </va-card-title>
 
 		<va-card-content>
 			<VaDataTable v-if="users.length > 0"
@@ -86,23 +89,39 @@ const input = "";
 			             :columns="columns"
 			>
         <template #cell(select)="{ rowIndex }">
-          <va-checkbox :checked="selectedRows.has(rowIndex)" @click="() => toggleSelection(rowIndex)" />
+          <input type="checkbox"
+                 :checked="selectedRows.has(rowIndex)"
+                 @click.stop="toggleSelection(rowIndex)" />
         </template>
 
-				<template #cell(actions)="{ rowIndex }">
+        <template #cell(actions)="{ rowIndex }">
 					<VaButton
 						preset="plain"
+<<<<<<< HEAD
+=======
+						icon="edit"
+						disabled
+					/>
+
+					<VaButton
+						preset="plain"
+>>>>>>> modal
 						icon="delete"
 						class="ml-3"
 						@click="deleteUser(rowIndex)"
-
 					/>
+
 				</template>
 			</VaDataTable>
 		</va-card-content>
 
 		<va-card-actions align="right">
-      <va-button v-if="selectedRows.size > 0" @click="deleteSelectedUsers">Delete Selected</va-button>
+      <va-button
+          v-if="selectedRows.size > 0"
+          @click="deleteSelectedUsers"
+          icon="delete_sweep"
+          color="danger">
+      </va-button>
 			<va-button icon="refresh" :loading="loading" @click="getUsers()"/>
 		</va-card-actions>
 
@@ -115,5 +134,13 @@ const input = "";
 	justify-content: flex-end;
 }
 
+input[type="checkbox"] {
+  transform: scale(1.4);
+}
+
+.add_client_icon {
+  cursor: pointer;
+  margin-left: 5px;
+}
 
 </style>
