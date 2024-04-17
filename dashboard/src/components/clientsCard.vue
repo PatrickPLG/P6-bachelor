@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {onBeforeMount, ref} from 'vue'
 import axios from 'axios'
+import ClientAddModal from './ClientAddModal.vue';
+
 
 const loading = ref(false)
 
@@ -55,6 +57,8 @@ const registerClient = async () => {
 }
 
 
+
+
 onBeforeMount(() => {
 	getUsers()
 })
@@ -70,13 +74,10 @@ const input = "";
 </script>
 
 <template>
-
 	<va-card>
-
-
     <va-card-title>
       Clients
-      <va-icon name="person_add" class="add_client_icon" color="success"></va-icon>
+      <ClientAddModal />
     </va-card-title>
 
 		<va-card-content>
