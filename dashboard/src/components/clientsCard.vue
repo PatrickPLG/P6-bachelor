@@ -97,15 +97,12 @@ const input = "";
         <template #cell(actions)="{ rowIndex }">
 					<VaButton
 						preset="plain"
-<<<<<<< HEAD
-=======
 						icon="edit"
 						disabled
 					/>
 
 					<VaButton
 						preset="plain"
->>>>>>> modal
 						icon="delete"
 						class="ml-3"
 						@click="deleteUser(rowIndex)"
