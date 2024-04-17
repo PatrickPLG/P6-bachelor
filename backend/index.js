@@ -8,12 +8,27 @@ dbHandler = new db();
 
 const app = express();
 app.use(cors()); // cors is security feature needed for my html test, since it would establish a connection otherwise. idk if we need it
+app.use(express.json());
 const port = 3001;
 
 app.get('/credentials', (req, res) => {
     const newClientId = require('uuid').v4()
     res.send(newClientId);
 });
+
+app.post('/register-client', (req, res) => {
+    const clientId = req.body.CLIENT_ID;
+    console.log('Registering Client ID:', clientId);
+    try {
+        dbHandler.registerClient(clientId);
+        console.log("Successfully registered client");
+    } catch (error) {
+        console.error('Error while registering client:', error);
+        res.status(500).send({message: 'Failed to register client', error: error});
+    }
+    res.status(200).send({message: 'Client registered successfully', clientId: clientId});
+});
+
 
 app.get('/delete-all-users', (req, res) => {
     dbHandler.deleteAllClients().then(() => {
@@ -79,32 +94,32 @@ io.listen(3000);
 io.on("connection", (socket) => {
     const credentials =
 
-    socket.on('register', async (credentials, callback) => {
-        try {
-            let jsonCredentials;
-            if (typeof credentials === 'string') {
-                jsonCredentials = JSON.parse(credentials);
-            } else if (typeof credentials === 'object') {
-                jsonCredentials = credentials;
-            } else {
-                throw new Error('Invalid credentials');
+        socket.on('register', async (credentials, callback) => {
+            try {
+                let jsonCredentials;
+                if (typeof credentials === 'string') {
+                    jsonCredentials = JSON.parse(credentials);
+                } else if (typeof credentials === 'object') {
+                    jsonCredentials = credentials;
+                } else {
+                    throw new Error('Invalid credentials');
+                }
+
+                const clientId = jsonCredentials.CLIENT_ID;
+
+                if (!clientId) {
+                    console.error('No CLIENT_ID provided');
+                    callback(new Error('No CLIENT_ID provided'));
+                    return;
+                }
+
+                await dbHandler.registerClient(clientId);
+                callback(null, 'Client registered successfully');
+            } catch (error) {
+                console.error('Error while registering client:', error);
+                callback(error);
             }
-
-            const clientId = jsonCredentials.CLIENT_ID;
-
-            if (!clientId) {
-                console.error('No CLIENT_ID provided');
-                callback(new Error('No CLIENT_ID provided'));
-                return;
-            }
-
-            await dbHandler.registerClient(clientId);
-            callback(null, 'Client registered successfully');
-        } catch (error) {
-            console.error('Error while registering client:', error);
-            callback(error);
-        }
-    });
+        });
 
     //socket.on('register', async (credentials, callback) => dbHandler.registerClient(JSON.parse(credentials)))
 
