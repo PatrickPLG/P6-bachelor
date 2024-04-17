@@ -56,7 +56,8 @@ const registerClient = async () => {
 
 onBeforeMount(() => {
 	getUsers()
-})*/
+})
+
 const columns = [
   {key: "select"},
 	{key: "id", sortable: true},
@@ -89,13 +90,6 @@ const input = "";
         </template>
 
 				<template #cell(actions)="{ rowIndex }">
-					<VaButton
-						preset="plain"
-						icon="edit"
-						disabled
-
-
-					/>
 					<VaButton
 						preset="plain"
 						icon="delete"
