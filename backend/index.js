@@ -2,13 +2,13 @@ const {Server} = require("socket.io");
 const express = require('express');
 const cors = require('cors');
 const db = require('./database')
+const {json} = require("express");
 
 dbHandler = new db();
 
 const app = express();
 app.use(cors()); // cors is security feature needed for my html test, since it would establish a connection otherwise. idk if we need it
 const port = 3001;
-
 
 app.get('/credentials', (req, res) => {
     const newClientId = require('uuid').v4()
@@ -50,6 +50,16 @@ app.get('/get-all-users', (req, res) => {
         res.status(500).send("Failed to get users");
     })
 });
+
+app.get('/get-all-sensor-data', (req, res) => {
+    dbHandler.getAllSensorData().then((rows) => {
+        console.log('All sensor data:', rows);
+        res.send(rows);
+    }).catch((err) => {
+        console.error(err.message);
+        res.status(500).send("Failed to get sensor data");
+    })
+})
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
@@ -102,9 +112,18 @@ io.on("connection", (socket) => {
         console.log(`Data from ${socket.id}:`, msg);
         const jsonMsg = JSON.parse(msg);
         const clientId = jsonMsg.CLIENT_ID;
+        const sensorType = jsonMsg.sensor_type;
+        const timestamp = jsonMsg.timestamp;
+        const sensorData = JSON.stringify(jsonMsg.sensor_data);
+
+
         dbHandler.getClientById(clientId).then(async (row) => {
             if (row) {
                 console.log('User found:', row);
+
+                await dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId)
+                io.emit('update')
+
             } else {
                 await dbHandler.createClient(clientId)
             }
