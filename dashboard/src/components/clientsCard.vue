@@ -61,7 +61,8 @@ const registerClient = async () => {
 
 onBeforeMount(() => {
 	getUsers()
-})*/
+})
+
 const columns = [
   {key: "select"},
 	{key: "id", sortable: true},
