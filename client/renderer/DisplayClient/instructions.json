@@ -1,0 +1,31 @@
+[
+  {
+    "shape": "circle",
+    "color": "#FF0000",
+    "position": { "x": 100, "y": 100 },
+    "size": 50
+  },
+  {
+    "shape": "rectangle",
+    "color": "#FFEE58",
+    "position": { "x": 200, "y": 200 },
+    "width": 80,
+    "height": 60
+  },
+  {
+    "shape": "ellipse",
+    "color": "#00FF00",
+    "position": { "x": 300, "y": 100 },
+    "width": 100,
+    "height": 50
+  },
+  {
+    "shape": "triangle",
+    "color": "#311B91",
+    "points": [
+      { "x": 400, "y": 300 },
+      { "x": 450, "y": 200 },
+      { "x": 500, "y": 300 }
+    ]
+  }
+]
