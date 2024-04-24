@@ -1,4 +1,11 @@
-{
-  "name": "John Doe",
-  "age": 30
-}
+[
+  {
+    "shape": "circle",
+    "color": "#FF0000",
+    "position": {
+      "x": 100,
+      "y": 100
+    },
+    "size": 50
+  }
+]

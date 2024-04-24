@@ -135,8 +135,15 @@ io.on("connection", (socket) => {
         dbHandler.getClientById(clientId).then(async (row) => {
             if (row) {
                 console.log('User found:', row);
-
+                
                 await dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId)
+                socket.emit('draw',`[
+                    {
+                      "shape": "circle",
+                      "color": "#FF0000",
+                      "position": { "x": 100, "y": 100 },
+                      "size": 50
+                    }]`)
                 io.emit('update')
 
             } else {

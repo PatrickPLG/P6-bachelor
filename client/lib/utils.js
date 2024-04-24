@@ -1,6 +1,7 @@
 const fs = require('fs');
+const path = require('path');
 
-function writeToJsonFile(objectData, filePath = '../renderer/DisplayClient/instructions.json') {
+function writeToJsonFile(objectData, filePath = path.resolve('renderer/DisplayClient/instructions.json')) {
 
     // Convert JSON object to string with some formatting
     const jsonData = JSON.stringify(objectData, null, 2);
@@ -15,6 +16,7 @@ function writeToJsonFile(objectData, filePath = '../renderer/DisplayClient/instr
     });
 }
 
+module.exports = {writeToJsonFile}
 
 /*
 Testing the function
