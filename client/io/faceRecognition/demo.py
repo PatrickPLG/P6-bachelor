@@ -14,18 +14,15 @@ import time
 from yunet import YuNet
 import pipe
 
-target = pipe.get_pipe()
+
 
 
 def sendDataToPipe(**kwargs):
-
+    target = pipe.get_pipe()
     jsonDict = {
-        "key": "sensor_data",
-        "data": {
-        }
     }
     for name, data in kwargs.items():
-        jsonDict["data"][name] = data
+        jsonDict[name] = data
 
     jsonObj = json.dumps(jsonDict)
     try:
@@ -191,8 +188,8 @@ if __name__ == '__main__':
                     }
                 }
                 jsonObj = json.dumps(jsonDict)
-                sendDataToPipe(HighestNumberOfFacesDetected=highestFaceCount,
-                               lookedAtScreenInSeconds=lookedAtScreenSeconds)
+                sendDataToPipe(FacesDetectedNumber=highestFaceCount,
+                               LookedAt=sum(lookedAtScreenSeconds))
 
             # Draw results on the input image
             frame = visualize(frame, results, fps=tm.getFPS())
@@ -203,7 +200,7 @@ if __name__ == '__main__':
             tm.reset()
         # Combine all seconds looked at screen
         print(lookedAtScreenSeconds)
-        lookedAtScreenSeconds = sum(lookedAtScreenSeconds)
+        
         jsonDict = {
             "key": "sensor_data",
             "data": {
