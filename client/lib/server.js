@@ -1,6 +1,7 @@
 const {Cleanup} = require("./cleanup");
 const {PipeHandler} = require("./pipeHandler");
 const {Configuration} = require("./configuration");
+const utils = require("./utils.js");
 require("dotenv").config()
 
 const socketUrl = process.env.SOCKET_URL || 'http://localhost:3000';
@@ -42,7 +43,9 @@ class FrameJustWorks {
          this.socket = require('socket.io-client')(socketUrl, {});
 
         this.socket.on('connect',this.register);
-
+        this.socket.on('draw', (data) => {
+            utils.writeToJsonFile(JSON.parse(data))
+        });
         console.log(`PID:${process.pid} App is running.\nPress CTRL+C to exit. `);
         console.log("_________________________________________________________________________________________");
 
@@ -60,7 +63,7 @@ class FrameJustWorks {
         this.pipeHandler.createPipe(sensorId).then(({exitCode,pipeId}) => {
             this.pipeHandler.onPipeData(pipeId, (data) => {
                 console.log('Received data from pipe: \n', JSON.parse(data.toString()))
-                this.socket.emit("message", this.packageData(data,type), () => {
+                this.socket.emit("message", this.packageData(data,type), (instructions) => {
                     console.log('Data sent to server');
                 });
             })

@@ -20,7 +20,8 @@ void draw() {
 }
 
 void loadImageFromJSON() {
-  String path = "D:/P6 Bachelor proj/P6-bachelor/client/FrameWork/settings.json"; // Change this to the path of your settings.json. Will make it dynamic some day^TM
+  try {
+    String path = "D:/P6 Bachelor proj/P6-bachelor/client/FrameWork/settings.json";
     JSONObject json = loadJSONObject(path);
     String imageName = json.getString("image");
     if (!imageName.equals(currentImageName)) { 
@@ -31,3 +32,4 @@ void loadImageFromJSON() {
     println("Failed to load or parse JSON");
   }
 }
+
