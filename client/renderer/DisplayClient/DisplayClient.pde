@@ -5,7 +5,7 @@ import java.io.ByteArrayInputStream;
 import processing.core.PApplet;
 import processing.data.JSONArray;
 import processing.data.JSONObject;
-
+import processing.core.*;
 
 
 public class DisplayClient extends PApplet {
@@ -18,14 +18,15 @@ public class DisplayClient extends PApplet {
 
 
   public void settings() {
-    size(600, 400);
+    size(800, 600);
   }
 
   public void setup() {
-    background(255);
+    frameRate(60);
   }
 
   public void draw() {
+
     loadData();
   }
 
@@ -41,15 +42,23 @@ public class DisplayClient extends PApplet {
 
       switch (shape) {
       case "circle":
+        setFillColor(instruction);
+
         drawCircle(instruction);
         break;
       case "rectangle":
+        setFillColor(instruction);
+
         drawRectangle(instruction);
         break;
       case "ellipse":
+        setFillColor(instruction);
+
         drawEllipse(instruction);
         break;
       case "triangle":
+        setFillColor(instruction);
+
         drawTriangle(instruction);
         break;
       default:
@@ -60,37 +69,36 @@ public class DisplayClient extends PApplet {
 
 
   void drawCircle(JSONObject instruction) {
-    int colorValue = getColor(instruction.getString("color"));
+
     float posX = instruction.getJSONObject("position").getFloat("x");
     float posY = instruction.getJSONObject("position").getFloat("y");
     float size = instruction.getFloat("size");
     ellipse(posX, posY, size, size);
-    fill(colorValue);
   }
 
   void drawRectangle(JSONObject instruction) {
-    int colorValue = getColor(instruction.getString("color"));
+
+
     float posX = instruction.getJSONObject("position").getFloat("x");
     float posY = instruction.getJSONObject("position").getFloat("y");
     float _width = instruction.getFloat("width");
     float _height = instruction.getFloat("height");
     rect(posX, posY, _width, _height);
-        fill(colorValue);
-
   }
 
   void drawEllipse(JSONObject instruction) {
-    int colorValue = getColor(instruction.getString("color"));
+
+
     float posX = instruction.getJSONObject("position").getFloat("x");
     float posY = instruction.getJSONObject("position").getFloat("y");
     float _width = instruction.getFloat("width");
     float _height = instruction.getFloat("height");
     ellipse(posX, posY, _width, _height);
-    fill(colorValue);
   }
 
   void drawTriangle(JSONObject instruction) {
-    int colorValue = getColor(instruction.getString("color"));
+
+
     JSONArray points = instruction.getJSONArray("points");
     if (points.size() == 3) {
       float x1 = points.getJSONObject(0).getFloat("x");
@@ -100,7 +108,6 @@ public class DisplayClient extends PApplet {
       float x3 = points.getJSONObject(2).getFloat("x");
       float y3 = points.getJSONObject(2).getFloat("y");
       triangle(x1, y1, x2, y2, x3, y3);
-      fill(colorValue);
     } else {
       println("Invalid number of points for triangle.");
     }
@@ -127,9 +134,33 @@ public class DisplayClient extends PApplet {
     return img;
   }
 
-  int getColor(String hex) {
-    int colorInt = unhex(hex.substring(1)); // Remove '#' and convert hex to int
-    println(colorInt, hex.substring(1));
-    return colorInt;
+  color getColor(String hex) {
+
+    int hexInt = unhex(hex.substring(1));
+    println(hexInt);
+
+    float _green = green(hexInt);
+    println(_green);
+
+    float _red = red(hexInt);
+    println(_red);
+
+
+    float _blue = blue(hexInt);
+    println(_blue);
+
+
+
+
+    color resColor = color(_red,_green, _blue);
+
+    println(resColor);
+
+    return resColor;
+  }
+
+  void setFillColor(JSONObject instruction) {
+    int colorValue = getColor(instruction.getString("color"));
+    fill(colorValue);
   }
 }

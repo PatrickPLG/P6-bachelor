@@ -1,15 +1,15 @@
 [
   {
     "shape": "circle",
-    "color": "#FF0000",
-    "position": { "x": 100, "y": 100 },
+    "color": "#FF4000",
+    "position": { "x": 200, "y": 100 },
     "size": 50
   },
   {
     "shape": "rectangle",
     "color": "#FFEE58",
-    "position": { "x": 200, "y": 200 },
-    "width": 80,
+    "position": { "x": 250, "y": 200 },
+    "width": 200,
     "height": 60
   },
   {
