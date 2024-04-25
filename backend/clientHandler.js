@@ -1,4 +1,4 @@
-class ClientHandler {
+ class ClientHandler {
   constructor() {
       this.clients = [];
   }
@@ -18,4 +18,6 @@ class ClientHandler {
 
 }
 
-module.export = {ClientHandler};
+ module.exports = {
+        ClientHandler
+ };

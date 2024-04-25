@@ -3,10 +3,11 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./database')
 const {json} = require("express");
-const {clientHandler} = require('./clientHandler');
+const clientHandler =  require('./clientHandler.js');
 const {instructionFactory} = require("./lib/intructionFactory");
 
 dbHandler = new db();
+const _clientHandler = new clientHandler.ClientHandler()
 
 const app = express();
 app.use(cors()); // cors is security feature needed for my html test, since it would establish a connection otherwise. idk if we need it
@@ -104,15 +105,15 @@ io.on("connection", (socket) => {
 
                 if (typeof credentials === 'string') {
                     console.log("Jeg blev kørt som string")
-                    clientHandler.addClient(socket, jsonCredentials.CLIENT_ID);
-                    console.log('Client registered:' , clientHandler.getAllClients());
+                    _clientHandler.addClient(socket, jsonCredentials.CLIENT_ID);
+                    console.log('Client registered:' , _clientHandler.getAllClients());
                     console.log(credentials);
                     jsonCredentials = JSON.parse(credentials);
                 } else if (typeof credentials === 'object') {
                     console.log("Jeg blev kørt som object")
                     jsonCredentials = credentials;
-                    clientHandler.addClient(socket, jsonCredentials.CLIENT_ID);
-                    console.log('Client registered:' , clientHandler.getAllClients());
+                    _clientHandler.addClient(socket, jsonCredentials.CLIENT_ID);
+                    console.log('Client registered:' , _clientHandler.getAllClients());
                 } else {
                     throw new Error('Invalid credentials');
                 }
@@ -135,6 +136,10 @@ io.on("connection", (socket) => {
 
         });
 
+        socket.on('disconnect', () => {
+            _clientHandler.removeClient(socket.id);
+            console.log('Client Removed:' , _clientHandler.getAllClients());
+        })
     //socket.on('register', async (credentials, callback) => dbHandler.registerClient(JSON.parse(credentials)))
 
     socket.on('message', (msg, callback) => {
@@ -214,6 +219,5 @@ io.on("connection", (socket) => {
 });
 
 io.on("disconnect", (socket) => {
-    clientHandler.removeClient();
-    console.log('Client Removed:' , clientHandler.getAllClients());
+
 });
