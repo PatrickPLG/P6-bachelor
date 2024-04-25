@@ -27,6 +27,7 @@ public class DisplayClient extends PApplet {
 
   public void draw() {
 
+    background(0);
     loadData();
   }
 
@@ -34,39 +35,59 @@ public class DisplayClient extends PApplet {
   void loadData() {
     // Load JSON file
     // Temporary full path until path problem resolved.
-    json = loadJSONArray("/home/mosfet/Projects/P6-bachelor/client/renderer/DisplayClient/instructions.json");
 
-    for (int i = 0; i < json.size(); i++) {
-      JSONObject instruction = json.getJSONObject(i);
-      String shape = instruction.getString("shape");
+    try {
+      json = loadJSONArray("/home/mosfet/Projects/P6-bachelor/client/renderer/DisplayClient/instructions.json");
 
-      switch (shape) {
-      case "circle":
-        setFillColor(instruction);
+      for (int i = 0; i < json.size(); i++) {
+        JSONObject instruction = json.getJSONObject(i);
+        String instructionType = instruction.getString("instructionType");
 
-        drawCircle(instruction);
-        break;
-      case "rectangle":
-        setFillColor(instruction);
+        switch (instructionType) {
+        case "circle":
+          setFillColor(instruction);
+          drawCircle(instruction);
+          break;
+        case "rectangle":
+          setFillColor(instruction);
+          drawRectangle(instruction);
+          break;
+        case "ellipse":
+          setFillColor(instruction);
+          drawEllipse(instruction);
+          break;
+        case "triangle":
+          setFillColor(instruction);
+          drawTriangle(instruction);
+          break;
+        case "text":
+          setFillColor(instruction);
+          drawText(instruction);
+          break;
 
-        drawRectangle(instruction);
-        break;
-      case "ellipse":
-        setFillColor(instruction);
-
-        drawEllipse(instruction);
-        break;
-      case "triangle":
-        setFillColor(instruction);
-
-        drawTriangle(instruction);
-        break;
-      default:
-        println("Unsupported shape: " + shape);
+        default:
+          println("Unsupported shape: " + instructionType);
+        }
       }
+      
+      
+    }
+    catch (Exception e) {
+      println("Error loading JSON data: " + e.getMessage());
     }
   }
 
+
+  void drawText(JSONObject instruction) {
+    float posX = instruction.getJSONObject("position").getFloat("x");
+    float posY = instruction.getJSONObject("position").getFloat("y");
+    float size = instruction.getFloat("size");
+    float _width = instruction.getFloat("width");
+    float _height = instruction.getFloat("height");
+    String text = instruction.getString("text");
+    textSize(size);
+    text(text, posX, posY, _width, _height);
+  }
 
   void drawCircle(JSONObject instruction) {
 
@@ -137,24 +158,11 @@ public class DisplayClient extends PApplet {
   color getColor(String hex) {
 
     int hexInt = unhex(hex.substring(1));
-    println(hexInt);
-
     float _green = green(hexInt);
-    println(_green);
-
     float _red = red(hexInt);
-    println(_red);
-
-
     float _blue = blue(hexInt);
-    println(_blue);
+    color resColor = color(_red, _green, _blue);
 
-
-
-
-    color resColor = color(_red,_green, _blue);
-
-    println(resColor);
 
     return resColor;
   }

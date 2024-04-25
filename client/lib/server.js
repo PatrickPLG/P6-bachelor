@@ -34,7 +34,10 @@ class FrameJustWorks {
     }
 	
 	register = () => {
-		this.socket.emit("register", this.configuration.credentials, () => {
+        const payload = {
+            'CLIENT_ID': this.configuration.credentials,
+        }
+		this.socket.emit("register", payload, () => {
 			console.log('Registered with server');
 		})
 	}
@@ -44,7 +47,7 @@ class FrameJustWorks {
 
         this.socket.on('connect',this.register);
         this.socket.on('draw', (data) => {
-            utils.writeToJsonFile(JSON.parse(data))
+            utils.writeToJsonFile(data)
         });
         console.log(`PID:${process.pid} App is running.\nPress CTRL+C to exit. `);
         console.log("_________________________________________________________________________________________");
@@ -63,7 +66,7 @@ class FrameJustWorks {
         this.pipeHandler.createPipe(sensorId).then(({exitCode,pipeId}) => {
             this.pipeHandler.onPipeData(pipeId, (data) => {
                 console.log('Received data from pipe: \n', JSON.parse(data.toString()))
-                this.socket.emit("message", this.packageData(data,type), (instructions) => {
+                this.socket.emit("message", this.packageData(data,type), () => {
                     console.log('Data sent to server');
                 });
             })

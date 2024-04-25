@@ -1,31 +1,14 @@
 [
   {
-    "shape": "circle",
-    "color": "#FF4000",
-    "position": { "x": 200, "y": 100 },
-    "size": 50
-  },
-  {
-    "shape": "rectangle",
-    "color": "#FFEE58",
-    "position": { "x": 250, "y": 200 },
-    "width": 200,
-    "height": 60
-  },
-  {
-    "shape": "ellipse",
-    "color": "#00FF00",
-    "position": { "x": 300, "y": 100 },
-    "width": 100,
-    "height": 50
-  },
-  {
-    "shape": "triangle",
-    "color": "#311B91",
-    "points": [
-      { "x": 400, "y": 300 },
-      { "x": 450, "y": 200 },
-      { "x": 500, "y": 300 }
-    ]
+    "instructionType": "text",
+    "color": "#FFFFFF",
+    "position": {
+      "x": 300,
+      "y": 250
+    },
+    "width": 1000,
+    "height": 50,
+    "size": 50,
+    "text": "1 FACE DETECTED"
   }
 ]

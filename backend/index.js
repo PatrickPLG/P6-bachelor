@@ -98,6 +98,7 @@ io.on("connection", (socket) => {
             try {
                 let jsonCredentials;
                 if (typeof credentials === 'string') {
+                    console.log(credentials);
                     jsonCredentials = JSON.parse(credentials);
                 } else if (typeof credentials === 'object') {
                     jsonCredentials = credentials;
@@ -134,16 +135,15 @@ io.on("connection", (socket) => {
 
         dbHandler.getClientById(clientId).then(async (row) => {
             if (row) {
-                console.log('User found:', row);
-                
+                /*console.log('User found:', row);*/
+
+
+                const testJson = JSON.parse(`[{"instructionType":"text","color":"#FFFFFF","position":{"x":300,"y":250},"width":1000,"height":50,"size":50,"text":"${jsonMsg.sensor_data['facesDetected']} FACE DETECTED"}]`)
+
+                console.log(testJson)
                 await dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId)
-                socket.emit('draw',`[
-                    {
-                      "shape": "circle",
-                      "color": "#FF0000",
-                      "position": { "x": 100, "y": 100 },
-                      "size": 50
-                    }]`)
+
+                socket.emit('draw', testJson)
                 io.emit('update')
 
             } else {
