@@ -80,6 +80,20 @@ app.get('/get-all-sensor-data', (req, res) => {
     })
 })
 
+app.post('/send-instructions', (req, res) => {
+    const { clientID, instructions } = req.body;
+    const socketId = _clientHandler.getSocketIdByClientId(clientID);
+
+    if (!socketId) {
+        return res.status(404).send({ message: "Client not found" });
+    }
+
+    io.to(socketId).emit('draw', instructions);
+    res.send({ message: "Instructions sent successfully" });
+});
+
+
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
     console.log(`Test af db og socket funktionalitet: http://localhost:63342/P6-bachelor/client/userTest.html?_ijt=djst3v89v1f4lbhm3jqab93no1`);
@@ -104,13 +118,11 @@ io.on("connection", (socket) => {
                 let jsonCredentials;
 
                 if (typeof credentials === 'string') {
-                    console.log("Jeg blev kørt som string")
                     _clientHandler.addClient(socket, jsonCredentials.CLIENT_ID);
                     console.log('Client registered:' , _clientHandler.getAllClients());
                     console.log(credentials);
                     jsonCredentials = JSON.parse(credentials);
                 } else if (typeof credentials === 'object') {
-                    console.log("Jeg blev kørt som object")
                     jsonCredentials = credentials;
                     _clientHandler.addClient(socket, jsonCredentials.CLIENT_ID);
                     console.log('Client registered:' , _clientHandler.getAllClients());

@@ -2,23 +2,25 @@
 import ConnectionCard from "@/components/connectionCard.vue";
 import ClientsCard from "@/components/clientsCard.vue";
 import SensorDataCard from "@/components/sensorDataCard.vue";
-import FigureCreationCard from "@/components/FigureCreationCard.vue";
+import InstructionSenderCard from "@/components/instructionSenderCard.vue";
 </script>
 
 <template>
-	<header>
-		<img class="logo" src="@/assets/Framework_logo_2.png" alt="logo"/>
-		<div class="title">
-			<h1>FrameJustWorks</h1>
-			<h2>Dashboard</h2>
-		</div>
-	</header>
-	<section class="dashboardCards">
-		<clients-card/>
-		<connection-card/>
-        <sensor-data-card/>
-    <FigureCreationCard/>
-	</section>
+  <header>
+    <section class="dashboardCards">
+      <img class="logo" src="@/assets/Framework_logo_2.png" alt="logo"/>
+      <div class="title">
+        <h1>FrameJustWorks</h1>
+        <h2>Dashboard</h2>
+      </div>
+    </section>
+  </header>
+  <section class="dashboardCards">
+    <clients-card/>
+    <connection-card/>
+    <sensor-data-card/>
+    <instruction-sender-card/>
+  </section>
 </template>
 
 <style scoped>
