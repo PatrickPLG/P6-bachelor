@@ -61,6 +61,13 @@ const registerClient = async () => {
     const registerResponse = await axios.post('http://localhost:3001/register-client', {CLIENT_ID: newClientId});
     console.log("Client registered:", registerResponse.data);
 
+  } catch (error) {
+    console.error("Error in client registration process", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
 onBeforeMount(() => {
     getUsers()
 })
@@ -77,6 +84,8 @@ const defaultItem = {
     ID: "",
     CLIENT_ID: "",
 }
+
+
 
 </script>
 

@@ -2,6 +2,7 @@
 import ConnectionCard from "@/components/connectionCard.vue";
 import ClientsCard from "@/components/clientsCard.vue";
 import SensorDataCard from "@/components/sensorDataCard.vue";
+import FigureCreationCard from "@/components/FigureCreationCard.vue";
 </script>
 
 <template>
@@ -16,6 +17,7 @@ import SensorDataCard from "@/components/sensorDataCard.vue";
 		<clients-card/>
 		<connection-card/>
         <sensor-data-card/>
+    <FigureCreationCard/>
 	</section>
 </template>
 
