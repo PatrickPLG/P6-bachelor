@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./database')
 const {json} = require("express");
+const {clientHandler} = require('./clientHandler');
 const {instructionFactory} = require("./lib/intructionFactory");
 
 dbHandler = new db();
@@ -97,18 +98,27 @@ io.on("connection", (socket) => {
     const credentials =
 
         socket.on('register', async (credentials, callback) => {
+
             try {
                 let jsonCredentials;
+
                 if (typeof credentials === 'string') {
+                    console.log("Jeg blev kørt som string")
+                    clientHandler.addClient(socket, jsonCredentials.CLIENT_ID);
+                    console.log('Client registered:' , clientHandler.getAllClients());
                     console.log(credentials);
                     jsonCredentials = JSON.parse(credentials);
                 } else if (typeof credentials === 'object') {
+                    console.log("Jeg blev kørt som object")
                     jsonCredentials = credentials;
+                    clientHandler.addClient(socket, jsonCredentials.CLIENT_ID);
+                    console.log('Client registered:' , clientHandler.getAllClients());
                 } else {
                     throw new Error('Invalid credentials');
                 }
 
                 const clientId = jsonCredentials.CLIENT_ID;
+
 
                 if (!clientId) {
                     console.error('No CLIENT_ID provided');
@@ -122,6 +132,7 @@ io.on("connection", (socket) => {
                 console.error('Error while registering client:', error);
                 callback(error);
             }
+
         });
 
     //socket.on('register', async (credentials, callback) => dbHandler.registerClient(JSON.parse(credentials)))
@@ -203,5 +214,6 @@ io.on("connection", (socket) => {
 });
 
 io.on("disconnect", (socket) => {
-    console.log('Client disconnected: ', socket.id);
+    clientHandler.removeClient();
+    console.log('Client Removed:' , clientHandler.getAllClients());
 });

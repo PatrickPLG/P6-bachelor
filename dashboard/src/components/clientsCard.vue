@@ -66,6 +66,13 @@ const registerClient = async () => {
     }
 }
 
+  } catch (error) {
+    console.error("Error in client registration process", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
 onBeforeMount(() => {
     getUsers()
 })
@@ -82,6 +89,8 @@ const defaultItem = {
     ID: "",
     CLIENT_ID: "",
 }
+
+
 
 </script>
 
