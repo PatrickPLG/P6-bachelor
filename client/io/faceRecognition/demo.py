@@ -49,7 +49,7 @@ def main():
             hasFrame, frame = cap.read()
             tm.start()
             results = model.infer(frame)  # results is a tuple
-
+            time.sleep(0.1)
             faceCount = len(results)
             sendDataToPipe()
             print(faceCount)

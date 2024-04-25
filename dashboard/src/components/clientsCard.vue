@@ -51,15 +51,20 @@ const toggleSelection = (index: number) => {
 };
 
 const registerClient = async () => {
-  try {
-    loading.value = true;
+    try {
+        loading.value = true;
 
-    const response = await axios.get('http://localhost:3001/credentials');
-    const newClientId = response.data;
-    console.log("New CLIENT_ID generated:", newClientId);
+        const response = await axios.get('http://localhost:3001/credentials');
+        const newClientId = response.data;
+        console.log("New CLIENT_ID generated:", newClientId);
 
-    const registerResponse = await axios.post('http://localhost:3001/register-client', {CLIENT_ID: newClientId});
-    console.log("Client registered:", registerResponse.data);
+        const registerResponse = await axios.post('http://localhost:3001/register-client', {CLIENT_ID: newClientId});
+        console.log("Client registered:", registerResponse.data);
+
+    } catch (error) {
+        console.error("Error registering client:", error);
+    }
+}
 
 onBeforeMount(() => {
     getUsers()

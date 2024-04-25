@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./database')
 const {json} = require("express");
+const {instructionFactory} = require("./lib/intructionFactory");
 
 dbHandler = new db();
 
@@ -39,6 +40,7 @@ app.get('/delete-all-users', (req, res) => {
         res.status(500).send("Failed to delete users");
     })
 });
+
 
 app.get('/delete-specific-user', (req, res) => {
     const appId = req.query.appId;
@@ -138,7 +140,51 @@ io.on("connection", (socket) => {
                 /*console.log('User found:', row);*/
 
 
-                const testJson = JSON.parse(`[{"instructionType":"text","color":"#FFFFFF","position":{"x":300,"y":250},"width":1000,"height":50,"size":50,"text":"${jsonMsg.sensor_data['facesDetected']} FACE DETECTED"}]`)
+                const instruction = new instructionFactory();
+
+                instruction.addText(
+                    `${jsonMsg.sensor_data['facesDetected'] > 0 ? '#00FF00' : '#FF0000'}`,
+                    250,
+                    50,
+                    1000,
+                    50,
+                    50,
+                    `${jsonMsg.sensor_data['facesDetected'] > 0 ? 'Face detected' : 'No face detected'}`
+                )
+
+                for (let i = 0; i < jsonMsg.sensor_data['facesDetected']; i++) {
+                    const ran = Math.max(50, Math.floor(Math.random() * 75))
+
+                    instruction.addCircle(
+                        '#FF0000',
+                        150 * (i + 1),
+                        200,
+                        ran
+                    )
+
+                    instruction.addText(
+                        '#FFFFFF',
+                        170 * (i + 1) - 25 ,
+                        200 + ran / 2 + 10,
+                        1000,
+                        50,
+                        20,
+                        `${i + 1}`
+                    )
+                }
+
+                instruction.addText(
+                    '#FFFFFF',
+                    400,
+                    300,
+                    1000,
+                    50,
+                    50,
+                    `${jsonMsg.sensor_data['facesDetected']}`
+                )
+
+
+                const testJson = instruction.getInstructions();
 
                 console.log(testJson)
                 await dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId)

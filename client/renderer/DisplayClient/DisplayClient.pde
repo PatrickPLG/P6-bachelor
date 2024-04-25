@@ -22,7 +22,7 @@ public class DisplayClient extends PApplet {
   }
 
   public void setup() {
-    frameRate(60);
+    frameRate(30);
   }
 
   public void draw() {
