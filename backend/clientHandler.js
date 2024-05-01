@@ -12,9 +12,6 @@
     getClient(clientID) {
         return this.clients.find(client => client.clientID === clientID);
     }
-    getAllClients() {
-        return this.clients;
-    }
     getSocketIdByClientId(clientID){
          const client = this.clients.find(client => client.clientID === clientID);
          return client ? client.socket.id : null;

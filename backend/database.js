@@ -33,15 +33,14 @@ class dbHandler {
                             ID INTEGER PRIMARY KEY AUTOINCREMENT,
                             CLIENT_ID TEXT NOT NULL,
                             SensorType TEXT NOT NULL,
-                            EventTypeID INTEGER,
+                            EventName TEXT,
                             FOREIGN KEY (CLIENT_ID) REFERENCES Client(CLIENT_ID),
-                            FOREIGN KEY (SensorType) REFERENCES Sensor(SensorType),
-                            FOREIGN KEY (EventTypeID) REFERENCES EventType(EventTypeID)
+                            FOREIGN KEY (SensorType) REFERENCES Sensor(SensorType)
                         )`);
 
                     this.db.run(`CREATE TABLE IF NOT EXISTS EventType (
-                            EventTypeID INTEGER PRIMARY KEY,
-                            Name TEXT
+                            EventName TEXT PRIMARY KEY,
+                            Function TEXT
                         )`);
                 });
             }
@@ -96,11 +95,52 @@ class dbHandler {
                 }
             });
         });
+
     }
+
+    async createEvent(clientID, sensorType, eventTypeID) {
+        return new Promise((resolve, reject) => {
+            this.db.run(`INSERT INTO Event(CLIENT_ID, SensorType, EventTypeID) VALUES (?,?,?)`, [clientID, sensorType, eventTypeID],(err, rows) => {
+                if (err) {
+                    console.log(err.message);
+                    reject(err);
+                } else {
+                    resolve(rows)
+                }
+            })
+        })
+    }
+
 
     async getAllSensorData() {
         return new Promise((resolve, reject) => {
             this.db.all(`SELECT * FROM SensorData`, (err, rows) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+    }
+
+    async getSensorType(clientId) {
+        return new Promise((resolve, reject) => {
+            this.db.get(`SELECT SensorType FROM Sensor WHERE CLIENT_ID = ?`, [clientId] , (err, rows) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+    }
+
+    async getAllClientSensorData(clientID) {
+        return new Promise((resolve, reject) => {
+            this.db.all(`SELECT * FROM Sensor INNER JOIN SensorData ON Sensor.SensorType = SensorData.SensorType WHERE CLIENT_ID = ?`, [clientID], (err, rows) => {
                 if (err) {
                     console.error(err.message);
                     reject(err);
