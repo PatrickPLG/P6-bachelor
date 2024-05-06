@@ -38,6 +38,7 @@ async function sensorType(clientID) {
 
 async function createEvents(clientID) {
     const sensorObj = await sensorType(clientID);
+    console.log(sensorObj);
     const eventMap = {
         'TemperatureExceedsMax': async (clientID) => {
             try {

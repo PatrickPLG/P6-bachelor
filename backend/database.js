@@ -29,14 +29,15 @@ class dbHandler {
                             PRIMARY KEY (SensorType, Timestamp)
                         )`);
 
-                    this.db.run(`CREATE TABLE IF NOT EXISTS Event (
-                            ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                            CLIENT_ID TEXT NOT NULL,
-                            SensorType TEXT NOT NULL,
-                            EventName TEXT,
-                            FOREIGN KEY (CLIENT_ID) REFERENCES Client(CLIENT_ID),
-                            FOREIGN KEY (SensorType) REFERENCES Sensor(SensorType)
-                        )`);
+                        this.db.run(`CREATE TABLE IF NOT EXISTS Event (
+                                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                                CLIENT_ID TEXT NOT NULL,
+                                SensorType TEXT NOT NULL,
+                                EventName TEXT,
+                                FOREIGN KEY (CLIENT_ID) REFERENCES Client(CLIENT_ID),
+                                FOREIGN KEY (SensorType) REFERENCES Sensor(SensorType)
+                                UNIQUE (CLIENT_ID, SensorType, EventName)
+                            )`);
 
                     this.db.run(`CREATE TABLE IF NOT EXISTS EventType (
                             EventName TEXT PRIMARY KEY,
@@ -98,9 +99,9 @@ class dbHandler {
 
     }
 
-    async createEvent(clientID, sensorType, eventTypeID) {
+    async createEvent(clientID, sensorType, EventName) {
         return new Promise((resolve, reject) => {
-            this.db.run(`INSERT INTO Event(CLIENT_ID, SensorType, EventTypeID) VALUES (?,?,?)`, [clientID, sensorType, eventTypeID],(err, rows) => {
+            this.db.run(`INSERT INTO Event(CLIENT_ID, SensorType, EventName) VALUES (?,?,?)`, [clientID, sensorType, EventName],(err, rows) => {
                 if (err) {
                     console.log(err.message);
                     reject(err);
