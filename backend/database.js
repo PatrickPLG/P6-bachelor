@@ -152,6 +152,33 @@ class dbHandler {
         });
     }
 
+    async deleteEvent(clientID, EventName) {
+        return new Promise((resolve, reject) => {
+            this.db.run(`DELETE FROM Event WHERE CLIENT_ID = ? AND EventName = ?`, [clientID, EventName], (err) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                } else {
+                    console.log(`Event with CLIENT_ID ${clientID} and EventName ${EventName} has been deleted.`);
+                    resolve();
+                }
+            });
+        });
+    }
+
+    async getAllClientEvents(clientID) {
+        return new Promise((resolve, reject) => {
+            this.db.all(`SELECT EventName FROM Event WHERE CLIENT_ID = ?`, [clientID], (err, rows) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+    }
+
     async deleteClientById(clientId) {
         return new Promise((resolve, reject) => {
             this.db.run(
