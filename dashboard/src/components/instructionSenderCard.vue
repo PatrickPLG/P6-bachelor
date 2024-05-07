@@ -33,7 +33,7 @@ onBeforeMount(getClients);
       Instruction Sender
     </va-card-title>
     <va-card-content>
-      <div>
+      <div style="display: flex;flex-direction: column">
         <select v-model="selectedClient">
           <option v-for="client in clients" :value="client.CLIENT_ID">
             {{ client.CLIENT_ID }}

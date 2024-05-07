@@ -12,8 +12,13 @@ class FrameJustWorks {
         this.pipeHandler = new PipeHandler();
         this.configuration = new Configuration();
         this.cleanup = new Cleanup(() => {
+
             console.log('Cleaning up before exit..');
-            this.pipeHandler.removeAllPipes().then((res) => console.log('All pipes removed:', res));
+            try {
+                this.pipeHandler.removeAllPipes().then(r => console.log('Pipes removed:', r));
+            } catch (e) {
+                console.log('Error removing pipes:', e);
+            }
         });
     }
 
