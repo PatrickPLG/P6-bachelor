@@ -36,11 +36,6 @@ class dbHandler {
                                 FOREIGN KEY (CLIENT_ID) REFERENCES Client(CLIENT_ID),
                                 UNIQUE (CLIENT_ID, EventName)
                             )`);
-
-                    this.db.run(`CREATE TABLE IF NOT EXISTS EventType (
-                            EventName TEXT PRIMARY KEY,
-                            Function TEXT
-                        )`);
                 });
             }
         });
