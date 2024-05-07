@@ -94,7 +94,7 @@ class dbHandler {
 
     async createEvent(clientID, EventName) {
         return new Promise((resolve, reject) => {
-            this.db.run(`INSERT INTO Event(CLIENT_ID, EventName) VALUES (?,?,?)`, [clientID, EventName],(err, rows) => {
+            this.db.run(`INSERT INTO Event(CLIENT_ID, EventName) VALUES (?,?)`, [clientID, EventName],(err, rows) => {
                 if (err) {
                     console.log(err.message);
                     reject(err);

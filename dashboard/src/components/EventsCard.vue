@@ -62,9 +62,17 @@ async function fetchEvents() {
 
 async function updateSubbedEvents() {
     loading.value = true
-    setTimeout(() => {
+    
+    await axios.post(`http://localhost:3001/update-client-subscribed-events`, {
+        clientId: selectedClientId.value,
+        events: selectedEvent.value
+    }).then((res) => {
+        console.log(res)
+    }).catch((err) => {
+        console.error(err)
+    }).finally(() => {
         loading.value = false
-    }, 3000)
+    })
 }
 </script>
 

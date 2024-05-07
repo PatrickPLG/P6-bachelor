@@ -85,6 +85,48 @@ const startApiServer = (port = 3001, dbHandler) => {
         res.send({message: "Instructions sent successfully"});
     });
 
+    app.post('/update-client-subscribed-events', async (req, res) => {
+
+        const {clientId, events} = req.body;
+        console.log(events)
+        console.log(clientId)
+        //get sub events from client
+        dbHandler.getAllClientEvents(clientId).then((rows) => {
+
+            console.log('All events:', rows);
+            //delete all events
+
+            rows.forEach((event) => {
+                console.log('Deleting event:', event, clientId);
+                dbHandler.deleteEvent(clientId, event.EventName).then(() => {
+                })
+            })
+
+            events.forEach((event) => {
+                console.log('Adding event:', event);
+                dbHandler.createEvent(clientId, event).then(() => {
+                    console.log(`Event ${event} added to client ${clientId}`);
+                })
+            })
+
+            /*      rows.forEach((event) => {
+                      console.log('Deleting event:', event);
+                      dbHandler.deleteEvent(clientId, event).then(() => {
+                          console.log(`Event ${event} deleted from client ${clientId}`);
+                      })
+                  })
+
+                  //add new events
+                  events.forEach((event) => {
+                      dbHandler.createEvent(clientId, event).then(() => {
+                          console.log(`Event ${event} added to client ${clientId}`);
+                      })
+                  })*/
+        })
+
+        res.send({message: "Events updated successfully"});
+    })
+
 
     app.get('/get-all-available-eventTypes', (req, res) => {
         const eventMap = require('./lib/EventMap')
