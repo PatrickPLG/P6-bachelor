@@ -9,7 +9,7 @@ const startApiServer = require('./api.js');
 
 dbHandler = new db();
 const _clientHandler = new clientHandler.ClientHandler()
-startApiServer(3001)
+startApiServer(3001,dbHandler)
 
 
 // Opsæt socket.io server og tillad CORS
