@@ -3,101 +3,14 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./database')
 const {json} = require("express");
-const clientHandler =  require('./clientHandler.js');
+const clientHandler = require('./clientHandler.js');
 const {instructionFactory} = require("./lib/intructionFactory");
+const startApiServer = require('./api.js');
 
 dbHandler = new db();
 const _clientHandler = new clientHandler.ClientHandler()
+startApiServer(3001)
 
-const app = express();
-app.use(cors()); // cors is security feature needed for my html test, since it would establish a connection otherwise. idk if we need it
-app.use(express.json());
-const port = 3001;
-
-app.get('/credentials', (req, res) => {
-    const newClientId = require('uuid').v4()
-    res.send(newClientId);
-});
-
-app.post('/register-client', (req, res) => {
-    const clientId = req.body.CLIENT_ID;
-    console.log('Registering Client ID:', clientId);
-    try {
-        dbHandler.registerClient(clientId);
-        console.log("Successfully registered client");
-    } catch (error) {
-        console.error('Error while registering client:', error);
-        res.status(500).send({message: 'Failed to register client', error: error});
-    }
-    res.status(200).send({message: 'Client registered successfully', clientId: clientId});
-});
-
-
-app.get('/delete-all-users', (req, res) => {
-    dbHandler.deleteAllClients().then(() => {
-        console.log(`All users deleted, total: ${this.changes}`);
-        res.send("All users deleted");
-    }).catch((err) => {
-        console.error(err.message);
-        res.status(500).send("Failed to delete users");
-    })
-});
-
-
-app.get('/delete-specific-user', (req, res) => {
-    const appId = req.query.appId;
-    if (!appId) {
-        res.status(400).send("No CLIENT_ID provided");
-        return;
-    }
-    dbHandler.deleteClientById(appId).then(() => {
-        console.log(`User deleted with CLIENT_ID: ${appId}`);
-        res.send(`User deleted with CLIENT_ID: ${appId}`);
-
-    }).catch((err) => {
-        console.error(err.message);
-        res.status(500).send("Failed to delete user");
-    })
-});
-
-app.get('/get-all-users', (req, res) => {
-    dbHandler.getAllClients().then((rows) => {
-        console.log('All users:', rows);
-        res.send(rows);
-    }).catch((err) => {
-        console.error(err.message);
-        res.status(500).send("Failed to get users");
-    })
-});
-
-app.get('/get-all-sensor-data', (req, res) => {
-    dbHandler.getAllSensorData().then((rows) => {
-        console.log('All sensor data:', rows);
-        res.send(rows);
-    }).catch((err) => {
-        console.error(err.message);
-        res.status(500).send("Failed to get sensor data");
-    })
-})
-
-app.post('/send-instructions', (req, res) => {
-    const { clientID, instructions } = req.body;
-    const socketId = _clientHandler.getSocketIdByClientId(clientID);
-
-    if (!socketId) {
-        return res.status(404).send({ message: "Client not found" });
-    }
-
-    io.to(socketId).emit('draw', instructions);
-    res.send({ message: "Instructions sent successfully" });
-});
-
-
-
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
-    console.log(`Test af db og socket funktionalitet: http://localhost:63342/P6-bachelor/client/userTest.html?_ijt=djst3v89v1f4lbhm3jqab93no1`);
-});
 
 // Opsæt socket.io server og tillad CORS
 const io = new Server({
@@ -113,19 +26,17 @@ io.on("connection", (socket) => {
     const credentials =
 
         socket.on('register', async (credentials, callback) => {
+            console.log('Client trying to register with credentials:', credentials)
 
             try {
                 let jsonCredentials;
 
                 if (typeof credentials === 'string') {
                     _clientHandler.addClient(socket, jsonCredentials.CLIENT_ID);
-                    console.log('Client registered:' , _clientHandler.getAllClients());
-                    console.log(credentials);
                     jsonCredentials = JSON.parse(credentials);
                 } else if (typeof credentials === 'object') {
                     jsonCredentials = credentials;
                     _clientHandler.addClient(socket, jsonCredentials.CLIENT_ID);
-                    console.log('Client registered:' , _clientHandler.getAllClients());
                 } else {
                     throw new Error('Invalid credentials');
                 }
@@ -148,10 +59,9 @@ io.on("connection", (socket) => {
 
         });
 
-        socket.on('disconnect', () => {
-            _clientHandler.removeClient(socket.id);
-            console.log('Client Removed:' , _clientHandler.getAllClients());
-        })
+    socket.on('disconnect', () => {
+        _clientHandler.removeClient(socket.id);
+    })
     //socket.on('register', async (credentials, callback) => dbHandler.registerClient(JSON.parse(credentials)))
 
     socket.on('message', (msg, callback) => {
@@ -192,7 +102,7 @@ io.on("connection", (socket) => {
 
                     instruction.addText(
                         '#FFFFFF',
-                        170 * (i + 1) - 25 ,
+                        170 * (i + 1) - 25,
                         200 + ran / 2 + 10,
                         1000,
                         50,
