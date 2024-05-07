@@ -19,8 +19,7 @@ class eventHandler {
 
   async subscribeToEvent(clientID, eventName) {
     //call db function for adding event to client
-    let sensorObj = await sensorType(clientID);
-    dbHandler.createEvent(clientID, sensorObj.SensorType, eventName);
+    dbHandler.createEvent(clientID, eventName);
   }
 
   unsubscribeToEvent(clientID, eventName) {
@@ -48,16 +47,13 @@ class eventHandler {
     
     return subbedEvents;
   }
-
-  // Function to get sensortype
-  async sensorType(clientID) {
-    return await dbHandler.getSensorType(clientID); // Return the awaited value
-  }
 }
 
 Event = new eventHandler();
 Event.runSubbedEvents("c7d90151-891d-436d-8a22-3f4a891c5348");
 
+
+// BRUGES IKKE
 // async function sensorType(clientID) {
 //   return await dbHandler.getSensorType(clientID); // Return the awaited value
 // }
