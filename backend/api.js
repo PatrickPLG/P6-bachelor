@@ -95,7 +95,17 @@ const startApiServer = (port = 3001, dbHandler) => {
         //return error
         //res.status(500).send({message: "Failed to get event types"});
     })
-
+    app.get('/get-client-subscribed-events', (req, res) => {
+        const id = req.query.clientId;
+        console.log('Getting events for client:', id);
+        dbHandler.getAllClientEvents(id).then((rows) => {
+            console.log('All events:', rows);
+            res.send(rows);
+        }).catch((err) => {
+            console.error(err.message);
+            res.status(500).send("Failed to get events");
+        })
+    })
 }
 
 module.exports = startApiServer;

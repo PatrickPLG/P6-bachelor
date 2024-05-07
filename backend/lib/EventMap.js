@@ -1,10 +1,14 @@
 const eventMap = {
     'TemperatureExceedsMax': () => {
         console.log('executing TemperatureExceedsMax');
+
+
+
         return 0
     },
     'PeterErEnBozo': () => {
         console.log('executing PeterErEnBozo');
+
         return 0
     },
     'PatrickErEnBozo': () => {
@@ -19,6 +23,9 @@ const eventMap = {
 
 
 console.log(eventMap['TemperatureExceedsMax']()); // prints 0
+
+
+
 
 
 module.exports = eventMap;
