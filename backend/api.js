@@ -22,7 +22,6 @@ app.post('/register-client', (req, res) => {
     res.status(200).send({message: 'Client registered successfully', clientId: clientId});
 });
 
-
 app.get('/delete-all-users', (req, res) => {
     dbHandler.deleteAllClients().then(() => {
         console.log(`All users deleted, total: ${this.changes}`);
@@ -32,7 +31,6 @@ app.get('/delete-all-users', (req, res) => {
         res.status(500).send("Failed to delete users");
     })
 });
-
 
 app.get('/delete-specific-user', (req, res) => {
     const appId = req.query.appId;
@@ -82,6 +80,16 @@ app.post('/send-instructions', (req, res) => {
     res.send({message: "Instructions sent successfully"});
 });
 
+
+app.get('/get-all-available-eventTypes', (req, res) => {
+    const eventMap = require('./lib/EventMap')
+
+    console.log(Object.keys(eventMap));
+
+    res.status(200).send(Object.keys(eventMap));
+    //return error
+    //res.status(500).send({message: "Failed to get event types"});
+})
 
 const startApiServer = (port = 3001) => {
     app.listen(port, () => {

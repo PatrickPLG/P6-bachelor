@@ -7,3 +7,6 @@ const eventMap = {
 
 
 console.log(eventMap['TemperatureExceedsMax']()); // prints 0
+
+
+module.exports = eventMap;

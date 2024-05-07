@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ClientsCard from "@/components/clientsCard.vue";
+import ClientsCard from "@/components/ClientsCard.vue";
 import InstructionSenderCard from "@/components/instructionSenderCard.vue";
-import ClientEvent from "@/components/ClientEvent.vue";
+import ClientEvent from "@/components/EventsCard.vue";
 </script>
 
 <template>
