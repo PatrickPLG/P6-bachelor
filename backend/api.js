@@ -96,18 +96,13 @@ const startApiServer = (port = 3001, dbHandler) => {
             console.log('All events:', rows);
             //delete all events
 
-            rows.forEach((event) => {
-                console.log('Deleting event:', event, clientId);
-                dbHandler.deleteEvent(clientId, event.EventName).then(() => {
+            dbHandler.deleteAllClientEvents(clientId).then(() => {
+                events.forEach(async (event) => {
+                    console.log('Adding event:', event);
+                    await dbHandler.createEvent(clientId, event)
                 })
             })
 
-            events.forEach((event) => {
-                console.log('Adding event:', event);
-                dbHandler.createEvent(clientId, event).then(() => {
-                    console.log(`Event ${event} added to client ${clientId}`);
-                })
-            })
 
             /*      rows.forEach((event) => {
                       console.log('Deleting event:', event);

@@ -63,6 +63,11 @@ async function fetchEvents() {
 async function updateSubbedEvents() {
     loading.value = true
     
+    console.log('sending',
+        {
+            clientId: selectedClientId.value,
+            events: selectedEvent.value
+        })
     await axios.post(`http://localhost:3001/update-client-subscribed-events`, {
         clientId: selectedClientId.value,
         events: selectedEvent.value

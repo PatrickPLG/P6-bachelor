@@ -69,7 +69,6 @@ const registerClient = async () => {
 }
 
 
-
 onBeforeMount(() => {
     getUsers()
 })
@@ -86,7 +85,6 @@ const defaultItem = {
     ID: "",
     CLIENT_ID: "",
 }
-
 
 
 </script>

@@ -159,6 +159,20 @@ class dbHandler {
         });
     }
 
+    async deleteAllClientEvents(clientId) {
+        return new Promise((resolve,reject) => {
+            this.db.run(`DELETE FROM Event WHERE CLIENT_ID = ?`, [clientId], (err) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                } else {
+                    console.log(`All events for CLIENT_ID ${clientId} have been deleted.`);
+                    resolve();
+                }
+            });
+        })
+    }
+
     async getAllClientEvents(clientID) {
         return new Promise((resolve, reject) => {
             this.db.all(`SELECT EventName FROM Event WHERE CLIENT_ID = ?`, [clientID], (err, rows) => {
