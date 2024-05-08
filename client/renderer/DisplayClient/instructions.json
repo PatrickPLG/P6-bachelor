@@ -1,14 +1,33 @@
 [
   {
-    "instructionType": "text",
-    "color": "#FF0000",
+    "instructionType": "rectangle",
+    "color": "#ffffff",
     "position": {
-      "x": 250,
-      "y": 50
+      "x": 500,
+      "y": 500
+    },
+    "width": 500,
+    "height": 100,
+    "round": 10
+  },
+  {
+    "instructionType": "text",
+    "color": "#000000",
+    "position": {
+      "x": 500,
+      "y": 480
     },
     "size": 50,
-    "width": 1000,
-    "height": 50,
-    "text": "faces exceeds max"
+    "text": "Welcome to McMyFace"
+  },
+  {
+    "instructionType": "text",
+    "color": "#424242",
+    "position": {
+      "x": 500,
+      "y": 521
+    },
+    "size": 21,
+    "text": "Please show your face to order"
   }
 ]
