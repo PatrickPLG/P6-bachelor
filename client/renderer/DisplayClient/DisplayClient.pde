@@ -18,16 +18,19 @@ public class DisplayClient extends PApplet {
 
 
   public void settings() {
-    size(800, 600);
+    fullScreen();
   }
 
   public void setup() {
     frameRate(30);
+    shapeMode(CENTER);
+    rectMode(CENTER);
+    windowRatio(1000,1000);
   }
 
   public void draw() {
 
-    background(0);
+    background(255);
     loadData();
   }
 
@@ -69,8 +72,6 @@ public class DisplayClient extends PApplet {
           println("Unsupported shape: " + instructionType);
         }
       }
-      
-      
     }
     catch (Exception e) {
       println("Error loading JSON data: " + e.getMessage());
@@ -82,11 +83,10 @@ public class DisplayClient extends PApplet {
     float posX = instruction.getJSONObject("position").getFloat("x");
     float posY = instruction.getJSONObject("position").getFloat("y");
     float size = instruction.getFloat("size");
-    float _width = instruction.getFloat("width");
-    float _height = instruction.getFloat("height");
     String text = instruction.getString("text");
     textSize(size);
-    text(text, posX, posY, _width, _height);
+    textAlign(CENTER, CENTER);
+    text(text, posX, posY);
   }
 
   void drawCircle(JSONObject instruction) {
@@ -104,7 +104,9 @@ public class DisplayClient extends PApplet {
     float posY = instruction.getJSONObject("position").getFloat("y");
     float _width = instruction.getFloat("width");
     float _height = instruction.getFloat("height");
-    rect(posX, posY, _width, _height);
+    float round = instruction.getFloat("round");
+
+    rect(posX, posY, _width, _height, round);
   }
 
   void drawEllipse(JSONObject instruction) {

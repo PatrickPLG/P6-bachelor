@@ -16,8 +16,8 @@ class instructionFactory {
         this.instructions.push(new CircleInstruction(color, x, y, size));
     }
 
-    addRectangle(color, x, y, width, height) {
-        this.instructions.push(new RectangleInstruction(color, x, y, width, height));
+    addRectangle(color, x, y, width, height,round) {
+        this.instructions.push(new RectangleInstruction(color, x, y, width, height,round));
     }
 
     addTriangle(color, x1, y1, x2, y2, x3, y3) {
@@ -28,8 +28,8 @@ class instructionFactory {
         this.instructions.push(new EllipseInstruction(color, x, y, width, height));
     }
 
-    addText(color, x, y, width, height, size, text) {
-        this.instructions.push(new TextInstruction(color, x, y, width, height, size, text));
+    addText(color, x, y, size, text) {
+        this.instructions.push(new TextInstruction(color, x, y, size, text));
     }
 
     addImage(base64) {
@@ -58,13 +58,14 @@ class RectangleInstruction {
     position = {x: 0, y: 0};
     width = 0;
     height = 0;
-
-    constructor(color, x,y, width, height) {
+    round = 0;
+    constructor(color, x,y, width, height,round) {
         this.color = color;
         this.position.x = x;
         this.position.y = y;
         this.width = width;
         this.height = height;
+        this.round = round;
     }
 
 }
@@ -106,16 +107,12 @@ class TextInstruction {
     color = '#FFFFFF';
     position = {x: 0, y: 0};
     size = 0;
-    width = 0;
-    height = 0;
     text = '';
 
-    constructor(color, x,y, width, height, size, text) {
+    constructor(color, x,y, size, text) {
         this.color = color;
         this.position.x = x;
         this.position.y = y;
-        this.width = width;
-        this.height = height;
         this.size = size;
         this.text = text;
     }
