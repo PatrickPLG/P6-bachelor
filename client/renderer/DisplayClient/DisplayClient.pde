@@ -25,7 +25,7 @@ public class DisplayClient extends PApplet {
     frameRate(30);
     shapeMode(CENTER);
     rectMode(CENTER);
-    windowRatio(1000,1000);
+    windowRatio(1000, 1000);
   }
 
   public void draw() {
@@ -66,6 +66,9 @@ public class DisplayClient extends PApplet {
         case "text":
           setFillColor(instruction);
           drawText(instruction);
+          break;
+        case "image":
+          drawImage(instruction);
           break;
 
         default:
@@ -117,6 +120,18 @@ public class DisplayClient extends PApplet {
     float _width = instruction.getFloat("width");
     float _height = instruction.getFloat("height");
     ellipse(posX, posY, _width, _height);
+  }
+
+  void drawImage(JSONObject instruction) {
+    float posX = instruction.getJSONObject("position").getFloat("x");
+    float posY = instruction.getJSONObject("position").getFloat("y");
+    float _width = instruction.getFloat("width");
+    float _height = instruction.getFloat("height");
+    String base64 = instruction.getString("base64");
+
+
+    PImage img = base64ToPImage(base64);
+    image(img, posX, posY, _width, _height);
   }
 
   void drawTriangle(JSONObject instruction) {

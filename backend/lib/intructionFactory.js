@@ -32,8 +32,8 @@ class instructionFactory {
         this.instructions.push(new TextInstruction(color, x, y, size, text));
     }
 
-    addImage(base64) {
-        console.log('not implemented')
+    addImage(base64, x, y, width, height) {
+        this.instructions.push(new ImageInstruction(base64, x, y, width, height));
     }
 }
 
@@ -109,7 +109,7 @@ class TextInstruction {
     size = 0;
     text = '';
 
-    constructor(color, x,y, size, text) {
+    constructor(color, x,y, size, text,align) {
         this.color = color;
         this.position.x = x;
         this.position.y = y;
@@ -121,6 +121,17 @@ class TextInstruction {
 class ImageInstruction {
     instructionType = 'image';
     base64 = '';
+    position = {x: 0, y: 0};
+
+
+constructor(base64, x, y, width, height) {
+        this.base64 = base64;
+        this.width = width;
+        this.height = height;
+        this.position.x = x;
+        this.position.y = y;
+    }
+
 }
 
 module.exports = {
