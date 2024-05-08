@@ -134,7 +134,7 @@ class dbHandler {
 
     async getAllClientSensorData(clientID) {
         return new Promise((resolve, reject) => {
-            this.db.all(`SELECT Sensor.SensorType, SensorType SensorData FROM Sensor INNER JOIN SensorData ON Sensor.SensorType = SensorData.SensorType WHERE CLIENT_ID = ?`, [clientID], (err, rows) => {
+            this.db.all(`SELECT Sensor.SensorType, SensorData FROM Sensor INNER JOIN SensorData ON Sensor.SensorType = SensorData.SensorType WHERE CLIENT_ID = ?`, [clientID], (err, rows) => {
                 if (err) {
                     console.error(err.message);
                     reject(err);
@@ -243,6 +243,7 @@ class dbHandler {
                         console.error(err.message);
                         reject(err);
                     } else if (!row) {
+                        console.log(`Sensor ${sensorType} not found for client ${clientId}.`)
                         this.db.run(
                             `INSERT INTO Sensor (CLIENT_ID, SensorType) VALUES (?, ?)`,
                             [clientId, sensorType],

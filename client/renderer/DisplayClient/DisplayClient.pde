@@ -37,7 +37,7 @@ public class DisplayClient extends PApplet {
     // Temporary full path until path problem resolved.
 
     try {
-      json = loadJSONArray("/home/mosfet/Projects/P6-bachelor/client/renderer/DisplayClient/instructions.json");
+      json = loadJSONArray("/Users/danielsejersen/Projects/P6-bachelor/client/renderer/DisplayClient/instructions.json");
 
       for (int i = 0; i < json.size(); i++) {
         JSONObject instruction = json.getJSONObject(i);

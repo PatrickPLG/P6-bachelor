@@ -6,11 +6,12 @@ const {json} = require("express");
 const clientHandler = require('./clientHandler.js');
 const {instructionFactory} = require("./lib/intructionFactory");
 const startApiServer = require('./api.js');
-
+const EventHandler = require('./eventHandler.js');
 dbHandler = new db();
 const _clientHandler = new clientHandler.ClientHandler()
-startApiServer(3001,dbHandler)
+startApiServer(3001, dbHandler)
 
+eventHandler = new EventHandler(dbHandler);
 
 // Opsæt socket.io server og tillad CORS
 const io = new Server({
@@ -65,7 +66,6 @@ io.on("connection", (socket) => {
     //socket.on('register', async (credentials, callback) => dbHandler.registerClient(JSON.parse(credentials)))
 
     socket.on('message', (msg, callback) => {
-        console.log(`Data from ${socket.id}:`, msg);
         const jsonMsg = JSON.parse(msg);
         const clientId = jsonMsg.CLIENT_ID;
         const sensorType = jsonMsg.sensor_type;
@@ -75,60 +75,62 @@ io.on("connection", (socket) => {
 
         dbHandler.getClientById(clientId).then(async (row) => {
             if (row) {
+                await dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId)
+                await eventHandler.runSubbedEvents(clientId,socket);
                 /*console.log('User found:', row);*/
 
+                /*
+                                const instruction = new instructionFactory();
 
-                const instruction = new instructionFactory();
+                                instruction.addText(
+                                    `${jsonMsg.sensor_data['facesDetected'] > 0 ? '#00FF00' : '#FF0000'}`,
+                                    250,
+                                    50,
+                                    1000,
+                                    50,
+                                    50,
+                                    `${jsonMsg.sensor_data['facesDetected'] > 0 ? 'Face detected' : 'No face detected'}`
+                                )
 
-                instruction.addText(
-                    `${jsonMsg.sensor_data['facesDetected'] > 0 ? '#00FF00' : '#FF0000'}`,
-                    250,
-                    50,
-                    1000,
-                    50,
-                    50,
-                    `${jsonMsg.sensor_data['facesDetected'] > 0 ? 'Face detected' : 'No face detected'}`
-                )
+                                for (let i = 0; i < jsonMsg.sensor_data['facesDetected']; i++) {
+                                    const ran = Math.max(50, Math.floor(Math.random() * 75))
 
-                for (let i = 0; i < jsonMsg.sensor_data['facesDetected']; i++) {
-                    const ran = Math.max(50, Math.floor(Math.random() * 75))
+                                    instruction.addCircle(
+                                        '#FF0000',
+                                        150 * (i + 1),
+                                        200,
+                                        ran
+                                    )
 
-                    instruction.addCircle(
-                        '#FF0000',
-                        150 * (i + 1),
-                        200,
-                        ran
-                    )
+                                    instruction.addText(
+                                        '#FFFFFF',
+                                        170 * (i + 1) - 25,
+                                        200 + ran / 2 + 10,
+                                        1000,
+                                        50,
+                                        20,
+                                        `${i + 1}`
+                                    )
+                                }
 
-                    instruction.addText(
-                        '#FFFFFF',
-                        170 * (i + 1) - 25,
-                        200 + ran / 2 + 10,
-                        1000,
-                        50,
-                        20,
-                        `${i + 1}`
-                    )
-                }
-
-                instruction.addText(
-                    '#FFFFFF',
-                    400,
-                    300,
-                    1000,
-                    50,
-                    50,
-                    `${jsonMsg.sensor_data['facesDetected']}`
-                )
+                                instruction.addText(
+                                    '#FFFFFF',
+                                    400,
+                                    300,
+                                    1000,
+                                    50,
+                                    50,
+                                    `${jsonMsg.sensor_data['facesDetected']}`
+                                )
 
 
-                const testJson = instruction.getInstructions();
+                                const testJson = instruction.getInstructions();
 
-                console.log(testJson)
-                await dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId)
+                                console.log(testJson)
+                                await dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId)
 
-                socket.emit('draw', testJson)
-                io.emit('update')
+                                socket.emit('draw', testJson)
+                                io.emit('update')*/
 
             } else {
                 await dbHandler.createClient(clientId)

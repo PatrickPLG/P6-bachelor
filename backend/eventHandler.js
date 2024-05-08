@@ -1,61 +1,58 @@
-const db = require("./database");
-
-dbHandler = new db();
+const eventMap = require("./lib/EventMap");
 
 
-class eventHandler {
-  constructor() {
-    this.eventMap = {
-      'TemperatureExceedsMax': () => {
-        console.log('executing TemperatureExceedsMax');
-        return 0
-      },
-      'TemperatureExceedsMax231321': () => {
-        console.log('executing TemperatureExceedsMax');
-        return 0
-      }
+class EventHandler {
+    constructor(db) {
+        this.eventMap = eventMap
+        this.dbHandler = db;
     }
-  }
 
-  async subscribeToEvent(clientID, eventName) {
-    //call db function for adding event to client
-    dbHandler.createEvent(clientID, eventName);
-  }
 
-  unsubscribeToEvent(clientID, eventName) {
-    //call db function for removing event from client
-    dbHandler.deleteEvent(clientID, eventName);
-  }
+    async subscribeToEvent(clientID, eventName) {
+        //call db function for adding event to client
+        this.dbHandler.createEvent(clientID, eventName);
+    }
 
-  async runSubbedEvents(clientID) {
-    let subbedEvents = await this.getSubbedEvents(clientID);
-    
-    subbedEvents.forEach(event => {
-      var foundEvent = this.eventMap[event.EventName];
-      if (foundEvent) {
-        foundEvent();
-      } else {
-        console.log(`Event ${event} not found in eventMap`);
-      }
-    });
-  }
+    async unsubscribeToEvent(clientID, eventName) {
+        //call db function for removing event from client
+        await this.dbHandler.deleteEvent(clientID, eventName);
+    }
 
-  async getSubbedEvents(clientID) {
-    //const subbedEvents = Get subscribed events from client
-    //return subbedEvents
-    let subbedEvents = await dbHandler.getAllClientEvents(clientID);
-    
-    return subbedEvents;
-  }
+    async getClientData(clientID) {
+        //call db function for getting data from client
+        return await this.dbHandler.getAllClientSensorData(clientID);
+    }
+
+    async runSubbedEvents(clientID,socket) {
+        let subbedEvents = await this.getSubbedEvents(clientID);
+
+       const clientData = await this.getClientData(clientID)
+        subbedEvents.forEach(event => {
+            const foundEvent = this.eventMap[event.EventName];
+
+             if (foundEvent) {
+                foundEvent(socket,clientData);
+            } else {
+                console.log(`Event ${event} not found in eventMap`);
+            }
+        });
+    }
+
+    async getSubbedEvents(clientID) {
+        //const subbedEvents = Get subscribed events from client
+        //return subbedEvents
+        let subbedEvents = await this.dbHandler.getAllClientEvents(clientID);
+
+        return subbedEvents;
+    }
 }
 
-Event = new eventHandler();
-Event.runSubbedEvents("c7d90151-891d-436d-8a22-3f4a891c5348");
+module.exports = EventHandler;
 
 
 // BRUGES IKKE
 // async function sensorType(clientID) {
-//   return await dbHandler.getSensorType(clientID); // Return the awaited value
+//   return await this.dbHandler.getSensorType(clientID); // Return the awaited value
 // }
 
 // async function createEvents(clientID) {
@@ -65,7 +62,7 @@ Event.runSubbedEvents("c7d90151-891d-436d-8a22-3f4a891c5348");
 //     TemperatureExceedsMax: async (clientID) => {
 //       try {
 //         // Get all data from clients sensor
-//         await dbHandler.getAllClientSensorData(clientID).then((rows) => {
+//         await this.dbHandler.getAllClientSensorData(clientID).then((rows) => {
 //           console.log(rows);
 //           // Do something with data from clients sensor
 //         });
@@ -76,7 +73,7 @@ Event.runSubbedEvents("c7d90151-891d-436d-8a22-3f4a891c5348");
 //   };
 
 //   Object.keys(eventMap).forEach((key) =>
-//     dbHandler.createEvent(clientID, sensorObj.SensorType, key)
+//     this.dbHandler.createEvent(clientID, sensorObj.SensorType, key)
 //   );
 // }
 

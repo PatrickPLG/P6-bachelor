@@ -9,18 +9,6 @@
     "size": 50,
     "width": 1000,
     "height": 50,
-    "text": "No face detected"
-  },
-  {
-    "instructionType": "text",
-    "color": "#FFFFFF",
-    "position": {
-      "x": 400,
-      "y": 300
-    },
-    "size": 50,
-    "width": 1000,
-    "height": 50,
-    "text": "0"
+    "text": "faces exceeds max"
   }
 ]
