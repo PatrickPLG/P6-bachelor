@@ -2,6 +2,7 @@
 import ClientsCard from "@/components/ClientsCard.vue";
 import InstructionSenderCard from "@/components/instructionSenderCard.vue";
 import ClientEvent from "@/components/EventsCard.vue";
+import CanvasViewer from "@/components/CanvasViewer.vue";
 </script>
 
 <template>
