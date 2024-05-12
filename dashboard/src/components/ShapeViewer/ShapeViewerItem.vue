@@ -9,7 +9,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['delete', 'select', 'moveBackward', 'moveForward']);
 
-const lockIcon = ref('lock');
+const lockIcon = ref('lock_open');
 
 const isSelected = computed(() => props.selectedShape === props.shape);
 
@@ -62,19 +62,21 @@ const getClass = computed(() => {
                     @click.prevent.stop="emit('delete',shape)"
                     size="small"
                 />
+                <div class="indexActions">
+                    <VaButton
+                        icon="arrow_upward"
+                        plain
+                        @click.prevent.stop="emit('moveBackward',shape)"
+                        size="small"
+                    />
+                    <VaButton
+                        icon="arrow_downward"
+                        plain
+                        @click.prevent.stop="emit('moveForward',shape)"
+                        size="small"
+                    />
                 
-                <VaButton
-                    icon="arrow_upward"
-                    plain
-                    @click.prevent.stop="emit('moveBackward',shape)"
-                    size="small"
-                />
-                <VaButton
-                    icon="arrow_downward"
-                    plain
-                    @click.prevent.stop="emit('moveForward',shape)"
-                    size="small"
-                />
+                </div>
             
             
             </div>
@@ -95,29 +97,42 @@ const getClass = computed(() => {
     gap: 10px;
     display: flex;
     flex-direction: column;
-    border: 1px solid #9f9f9f;
+    border: 1px solid #e8e8e8;
     padding: 5px;
     
     .shapeViewerItem__actions {
         width: 100%;
         display: flex;
-        gap: 5px;
+        align-items: center;
         justify-content: space-between;
-        align-items: flex-start;
         
         .shapeViewerItem__actions__container {
             display: flex;
+            justify-content: space-between;
             gap: 5px;
+            align-items: center;
         }
     }
     
     
-    
+}
+
+.indexActions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+}
+
+h3 {
+    margin: 0;
+    cursor: default;
+    font-size: 14px;
 }
 
 .shapeViewerItem--selected {
-    background-color: #9f9f9f;
-    color: white;
+    outline: 2px solid #007bff;
 }
 
 

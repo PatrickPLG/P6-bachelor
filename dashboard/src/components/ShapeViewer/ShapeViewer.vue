@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {computed, onMounted, type PropType, reactive, ref, watch} from "vue";
+import {computed, inject, onMounted, type PropType, reactive, type Ref, ref, watch} from "vue";
 import {Circle, type IShape, Rectangle} from "@/lib/shapes/shapes";
 import ShapeViewerItem from "@/components/ShapeViewer/ShapeViewerItem.vue";
 
@@ -10,6 +10,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['delete', 'select', 'moveBackward', 'moveForward']);
 
+const containerStyle = inject('containerStyle') as { canvasWidth: Ref<number>, canvasHeight: Ref<number> };
 
 const settingsState = reactive({
     x: 0,
@@ -57,6 +58,12 @@ function setSize() {
         props.selectedShape.setSize(settingsState.size)
 }
 
+function setRoundness() {
+    if (!props.selectedShape) return;
+    if (props.selectedShape instanceof Rectangle)
+        props.selectedShape.setRoundness(settingsState.roundness)
+}
+
 function setHeight() {
     if (!props.selectedShape) return;
     if (props.selectedShape instanceof Rectangle)
@@ -71,22 +78,45 @@ function onMoveForward() {
     emit('moveForward', props.selectedShape)
 }
 
+function centerShape() {
+    if (!props.selectedShape) return;
+    props.selectedShape.centerShape(containerStyle.canvasWidth.value, containerStyle.canvasHeight.value)
+}
+
+function alignVerticalCenter() {
+    if (!props.selectedShape) return;
+    props.selectedShape.alignVerticalCenter(containerStyle.canvasHeight.value)
+}
+
+function alignHorizontalCenter() {
+    if (!props.selectedShape) return;
+    props.selectedShape.alignHorizontalCenter(containerStyle.canvasWidth.value)
+}
+
 </script>
 
 <template>
     <div class="shapeViewer">
         <div class="shapeViewer__items" :class="{'showSetting':selectedShape}">
-            <ShapeViewerItem v-for="shape in shapes" :shape="shape" @move-backward="onMoveBackward" @moveForward="onMoveForward" @delete="emit('delete',shape)"
+            <ShapeViewerItem v-for="shape in shapes" :shape="shape" @move-backward="onMoveBackward"
+                             @moveForward="onMoveForward" @delete="emit('delete',shape)"
                              @select="emit('select', shape);" :selected-shape="selectedShape"/>
         </div>
         <div class="selectedSettings" v-if="selectedShape">
-            <h3>{{ selectedShape.constructor.name }}</h3>
+            <div class="header">
+                <h3>{{ selectedShape.constructor.name }}</h3>
+                
+                <VaButton plain icon="center_focus_strong" @click="centerShape" size="small"/>
+                <VaButton plain icon="align_vertical_center" @click="alignVerticalCenter" size="small"/>
+                <VaButton plain icon="align_horizontal_center" @click="alignHorizontalCenter" size="small"/>
+            </div>
+            
             <va-color-input indicator="square" label="fill color" v-model="selectedShape._color"/>
             <VaInput v-if="selectedShape.hasOwnProperty('roundness')"
-                     :model-value="settingsState.roundness"
+                     v-model="settingsState.roundness"
                      class="mb-6 input"
                      inner-label
-                     
+                     @input="setRoundness"
                      label="roundness"
             />
             <VaInput v-if="selectedShape instanceof Circle"
@@ -96,43 +126,41 @@ function onMoveForward() {
                      inner-label
                      @input="setSize"
             />
-           <div class="options">
-               
-               
-           
-               
-               <VaInput v-if="selectedShape.hasOwnProperty('_width')"
-                        v-model="settingsState.width"
-                        class="mb-6 input"
-                        label="Width"
-                        inner-label
-                        @input="setWidth"
-               />
-               <VaInput v-if="selectedShape.hasOwnProperty('_height')"
-                        v-model="settingsState.height"
-                        class="mb-6 input"
-                        inner-label
-                        label="Height"
-                        @input="setHeight"
-               />
-               
-               <VaInput
-                   v-model="settingsState.x"
-                   class="mb-6 input"
-                   inner-label
-                   label="x"
-                   @input="setX"
-               />
-               
-               <VaInput
-                   v-model="settingsState.y"
-                   class="mb-6 input"
-                   inner-label
-                   label="y"
-                   @input="setY"/>
-           
-           </div>
-           
+            <div class="options">
+                
+                
+                <VaInput v-if="selectedShape.hasOwnProperty('_width')"
+                         v-model="settingsState.width"
+                         class="mb-6 input"
+                         label="Width"
+                         inner-label
+                         @input="setWidth"
+                />
+                <VaInput v-if="selectedShape.hasOwnProperty('_height')"
+                         v-model="settingsState.height"
+                         class="mb-6 input"
+                         inner-label
+                         label="Height"
+                         @input="setHeight"
+                />
+                
+                <VaInput
+                    v-model="settingsState.x"
+                    class="mb-6 input"
+                    inner-label
+                    label="x"
+                    @input="setX"
+                />
+                
+                <VaInput
+                    v-model="settingsState.y"
+                    class="mb-6 input"
+                    inner-label
+                    label="y"
+                    @input="setY"/>
+            
+            </div>
+        
         
         </div>
     </div>
@@ -152,6 +180,7 @@ function onMoveForward() {
     
     .shapeViewer__items {
         overflow-y: scroll;
+        overflow-x: hidden;
         padding: 10px;
         display: flex;
         flex-direction: column;
@@ -162,14 +191,14 @@ function onMoveForward() {
         display: flex;
         flex-direction: column;
         overflow-y: scroll;
-        height: 250px;
+        overflow-x: hidden;
+        height: 300px;
         gap: 10px;
         width: 200px;
         padding: 10px;
         border-top: 1px solid #e8e8e8;
         
         h3 {
-            margin-bottom: 10px;
             cursor: default;
         }
         
@@ -177,8 +206,15 @@ function onMoveForward() {
             width: 180px;
             display: grid;
             gap: 10px;
-            grid-template-columns: 85px 85px;
+            grid-template-columns: 77px 77px;
         }
     }
 }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 </style>

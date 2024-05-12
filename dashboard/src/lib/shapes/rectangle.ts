@@ -133,7 +133,7 @@ export class Rectangle extends Rect {
         this.points.push(this.bottomLeft);
 
         this.computePoints();
-        this.dragEnabled = false;
+        this.dragEnabled = true;
         this.dragArea = this;
         this.dragOffset = undefined;
         this.isDragged = false;
@@ -181,6 +181,10 @@ export class Rectangle extends Rect {
         this.computePosAndSize();
     }
 
+    setRoundness(roundness: string) {
+        this.roundness = parseInt(roundness)
+    }
+
 
     setSize(newSize: number) {
         let deltaWidth = this.width - newSize;
@@ -199,6 +203,36 @@ export class Rectangle extends Rect {
         this.topRight.set(this.maxX, this.minY);
         this.bottomRight.set(this.maxX, this.maxY);
         this.bottomLeft.set(this.minX, this.maxY);
+    }
+
+    centerShape(canvasWidth: number, canvasHeight: number) {
+        this._x = (canvasWidth - this.width) / 2;
+        this._y = (canvasHeight - this.height) / 2;
+        this.computePoints();
+    }
+
+    alignHorizontalCenter(canvasWidth: number) {
+        this._x = (canvasWidth - this.width) / 2;
+        this.computePoints();
+    }
+
+    alignVerticalCenter(canvasHeight: number) {
+        this._y = (canvasHeight - this.height) / 2;
+        this.computePoints();
+    }
+
+    toJSON() {
+        return {
+            "instructionType": "rectangle",
+            "position": {
+                "x": this.x,
+                "y": this.y
+            },
+            "width": this.width,
+            "height": this.height,
+            "color": this.color,
+            "round": this.roundness
+        }
     }
 
     computePosAndSize() {
@@ -306,7 +340,7 @@ export class Rectangle extends Rect {
         this.setStyle(p)
 
         p.rectMode(p.CORNER)
-        p.rect(this.x, this.y, this.width, this.height, this.roundness);
+        p.rect(this.x, this.y, this.width, this.height, this.roundness, this.roundness, this.roundness, this.roundness);
 
         const isPointsActive = this.points.some(point => point.isBeingDragged || point.isBeingHovered) || this.isBeingHovered;
 

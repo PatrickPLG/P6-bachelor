@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import P5 from 'p5'
-import {onMounted, ref} from "vue";
+import {onMounted, provide, ref} from "vue";
 import {Point} from "@/lib/shapes/point";
 import {Circle} from "@/lib/shapes/circle";
 import {Rectangle} from "@/lib/shapes/rectangle";
@@ -14,11 +14,14 @@ const p5Instance = ref<P5 | null>(null);
 
 const shapes = ref<IShape[]>([]);
 const selectedShape = ref<IShape | null>(null);
-
+const canvasWidth = ref(500);
+const canvasHeight = ref(500);
 const containerStyle = {
-    width: `${500}px`,
-    height: `${500}px`
+    width: `${canvasWidth.value}px`,
+    height: `${canvasHeight.value}px`
 }
+
+provide('containerStyle', {canvasWidth, canvasHeight});
 
 onMounted(() => {
     
@@ -85,7 +88,6 @@ function addCircle() {
 function addRectangle() {
     if (!p5Instance.value) return;
     const rect = new Rectangle(100, 100, 100, 100);
-    rect.roundness = 10;
     shapes.value.push(rect);
 }
 
@@ -120,6 +122,13 @@ function moveForward(shape: IShape) {
     const index = shapes.value.indexOf(shape);
     array_move(shapes.value, index, index + 1);
 }
+
+
+function exportJson() {
+    const json = shapes.value.map(shape => shape.toJSON());
+    console.log(JSON.stringify(json));
+}
+
 </script>
 
 <template>
@@ -150,10 +159,11 @@ function moveForward(shape: IShape) {
                 
                 </VaButtonDropdown>
             </div>
-        
+            
         
         </div>
-    
+        
+        <va-button @click="exportJson">Export</va-button>
     
     </section>
 
@@ -176,10 +186,11 @@ function moveForward(shape: IShape) {
 }
 
 .editor {
-    display: grid;
-    grid-template-rows:50px 1fr;
-    justify-items: center;
+    display: flex;
+    flex-direction: column;
     gap: 10px;
+    justify-content: center;
+    align-items: center;
     
     .editorContainer {
         display: flex;

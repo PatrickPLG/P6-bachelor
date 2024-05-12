@@ -58,6 +58,7 @@ header {
 
 
 .dashboardCards {
+    overflow: hidden;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;

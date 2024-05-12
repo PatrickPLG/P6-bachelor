@@ -16,11 +16,11 @@ export class Circle {
     dragSize: Point
     points: Point[]
 
-    constructor(x: number, y: number,color: string = DEFAULT_FILL_COLOR) {
+    constructor(x: number, y: number, color: string = DEFAULT_FILL_COLOR) {
         this.pos = new Vector(x, y);
         this.radius = 10;
         this.isDragged = false;
-        this.dragEnabled = false;
+        this.dragEnabled = true;
         this.color = color;
         this._color = this.color;
         this.dragPos = new Point(0, 0);
@@ -39,6 +39,38 @@ export class Circle {
         this.pos.y = y;
         this.dragSize.y = this.y;
         this.dragSize.x = this.x + this.radius;
+    }
+
+    toJSON() {
+        return {
+            "instructionType": "circle",
+            "position": {
+                "x": this.x,
+                "y": this.y
+            },
+            "radius": this.radius,
+            "color": this.color
+        }
+    }
+
+    centerShape(canvasWidth: number, canvasHeight: number) {
+        this.pos.x = canvasWidth / 2;
+        this.pos.y = canvasHeight / 2;
+        this.dragSize.x = this.x + this.radius;
+        this.dragSize.y = this.y;
+    }
+
+    alignVerticalCenter(canvasHeight: number) {
+        this.pos.y = canvasHeight / 2;
+        this.dragSize.y = this.y;
+        this.dragSize.x = this.x + this.radius;
+
+    }
+
+    alignHorizontalCenter(canvasWidth: number) {
+        this.pos.x = canvasWidth / 2;
+        this.dragSize.x = this.x + this.radius;
+        this.dragSize.y = this.y;
     }
 
     get x() {
@@ -183,7 +215,7 @@ export class Circle {
         const isPointsActive = this.points.some(point => point.isBeingDragged || point.isBeingHovered) || this.isBeingHovered;
 
         if (this.dragEnabled && isPointsActive) {
-           this.dragSize.draw(p);
+            this.dragSize.draw(p);
         }
     }
 
