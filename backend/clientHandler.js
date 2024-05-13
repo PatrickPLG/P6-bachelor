@@ -106,6 +106,5 @@ class ClientHandler {
 
 }
 
-module.exports = {
-    ClientHandler
-};
+module.exports = ClientHandler
+
