@@ -45,11 +45,11 @@ export class Circle {
         return {
             "instructionType": "circle",
             "position": {
-                "x": this.x,
-                "y": this.y
+                "x": this.x * 2,
+                "y": this.y * 2
             },
-            "radius": this.radius,
-            "color": this.color
+            "size": this.width * 2,
+            "color": this._color
         }
     }
 

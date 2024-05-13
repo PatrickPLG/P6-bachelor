@@ -19,13 +19,14 @@ public class DisplayClient extends PApplet {
 
   public void settings() {
     fullScreen();
+    //size(1000,1000);
   }
 
   public void setup() {
     frameRate(30);
     shapeMode(CENTER);
-    rectMode(CENTER);
-    windowRatio(1000, 1000);
+    //rectMode(CENTER);
+    windowRatio(1920, 1080);
   }
 
   public void draw() {
@@ -102,7 +103,7 @@ public class DisplayClient extends PApplet {
 
   void drawRectangle(JSONObject instruction) {
 
-
+    noStroke();
     float posX = instruction.getJSONObject("position").getFloat("x");
     float posY = instruction.getJSONObject("position").getFloat("y");
     float _width = instruction.getFloat("width");

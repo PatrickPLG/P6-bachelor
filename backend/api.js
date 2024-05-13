@@ -1,4 +1,4 @@
-const startApiServer = (port = 3001, dbHandler) => {
+const startApiServer = (port = 3001, dbHandler, clienthandler, io) => {
     const express = require("express");
     const cors = require("cors");
     const app = express();
@@ -75,8 +75,10 @@ const startApiServer = (port = 3001, dbHandler) => {
 
     app.post('/send-instructions', (req, res) => {
         const {clientID, instructions} = req.body;
-        const socketId = _clientHandler.getSocketIdByClientId(clientID);
+        console.log('received',clientID, instructions)
+        const socketId = clienthandler.getSocketIdByClientId(clientID);
 
+        console.log('found socket id:', socketId)
         if (!socketId) {
             return res.status(404).send({message: "Client not found"});
         }

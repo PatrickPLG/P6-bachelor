@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import P5 from 'p5'
-import {onMounted, provide, ref} from "vue";
+import {onBeforeMount, onMounted, provide, ref} from "vue";
 import {Point} from "@/lib/shapes/point";
 import {Circle} from "@/lib/shapes/circle";
 import {Rectangle} from "@/lib/shapes/rectangle";
 import type {IShape} from "@/lib/shapes/shapes";
 import ShapeViewer from "@/components/ShapeViewer/ShapeViewer.vue";
-import {array_move} from "@/lib/util_functions"; // Package from npm
+import {array_move} from "@/lib/util_functions";
+import axios from "axios"; // Package from npm
 
 
 const canvasContainer = ref<HTMLElement | null>(null);
@@ -14,27 +15,26 @@ const p5Instance = ref<P5 | null>(null);
 
 const shapes = ref<IShape[]>([]);
 const selectedShape = ref<IShape | null>(null);
-const canvasWidth = ref(500);
-const canvasHeight = ref(500);
+const canvasWidth = ref(960);
+const canvasHeight = ref(540);
 const containerStyle = {
     width: `${canvasWidth.value}px`,
     height: `${canvasHeight.value}px`
 }
 
 provide('containerStyle', {canvasWidth, canvasHeight});
+onBeforeMount(() => {
+    getClients();
+});
 
 onMounted(() => {
-    
     const sketch = (p: P5) => {
         p.setup = () => {
-            p.createCanvas(1000 / 2, 1080 / 2);
-            p.background(255);
-            
-            
+            p.createCanvas(960 , 540 );
         };
         
         p.draw = () => {
-            p.background(255);
+            p.background(253);
             try {
                 if (shapes.value)
                     shapes.value.forEach(s => {
@@ -123,17 +123,42 @@ function moveForward(shape: IShape) {
     array_move(shapes.value, index, index + 1);
 }
 
+const getClients = async () => {
+    const response = await axios.get('http://localhost:3001/get-all-users');
+    clients.value = response.data;
+};
 
-function exportJson() {
+const clients = ref([]);
+const selectedClient = ref('');
+
+async function sendJsonToClient() {
     const json = shapes.value.map(shape => shape.toJSON());
-    console.log(JSON.stringify(json));
+    const instructions = json
+    
+    try {
+        const response = await axios.post('http://localhost:3001/send-instructions', {
+            clientID: selectedClient.value,
+            instructions: instructions
+        });
+        console.log("Instructions sent to client:", instructions);
+        console.log(response.data);
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 </script>
 
 <template>
     <section class="editor">
-        
+        <div>
+            <select v-model="selectedClient">
+                <option v-for="client in clients" :value="client.CLIENT_ID">
+                    {{ client.CLIENT_ID }}
+                </option>
+            </select>
+            <va-button v-if="selectedClient" @click="sendJsonToClient">Export to client</va-button>
+        </div>
         
         <div class="editorContainer">
             <ShapeViewer :shapes="shapes" :selected-shape="selectedShape"
@@ -159,12 +184,11 @@ function exportJson() {
                 
                 </VaButtonDropdown>
             </div>
-            
+        
         
         </div>
+       
         
-        <va-button @click="exportJson">Export</va-button>
-    
     </section>
 
 </template>

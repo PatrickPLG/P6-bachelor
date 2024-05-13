@@ -324,7 +324,6 @@ class dbHandler {
         })
     }
 
-
 }
 
 module.exports = dbHandler;

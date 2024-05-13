@@ -170,7 +170,7 @@ function alignHorizontalCenter() {
 .shapeViewer {
     display: grid;
     grid-template-rows: 1fr 0fr;
-    height: 500px;
+    height: 540px;
     width: 200px;
     background-color: white;
     border-right: 1px solid #e8e8e8;

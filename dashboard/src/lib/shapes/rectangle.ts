@@ -225,13 +225,13 @@ export class Rectangle extends Rect {
         return {
             "instructionType": "rectangle",
             "position": {
-                "x": this.x,
-                "y": this.y
+                "x": this.x * 2,
+                "y": this.y * 2
             },
-            "width": this.width,
-            "height": this.height,
-            "color": this.color,
-            "round": this.roundness
+            "width": this.width * 2,
+            "height": this.height * 2,
+            "color": this._color,
+            "round": this.roundness * 2
         }
     }
 
@@ -340,7 +340,7 @@ export class Rectangle extends Rect {
         this.setStyle(p)
 
         p.rectMode(p.CORNER)
-        p.rect(this.x, this.y, this.width, this.height, this.roundness, this.roundness, this.roundness, this.roundness);
+        p.rect(this.x, this.y, this.width, this.height, this.roundness);
 
         const isPointsActive = this.points.some(point => point.isBeingDragged || point.isBeingHovered) || this.isBeingHovered;
 
