@@ -1,4 +1,4 @@
-const db = require('./database')
+const db = require('./database.js')
 const ClientHandler = require('./clientHandler.js');
 const Api = require('./api.js');
 const EventHandler = require('./eventHandler.js');

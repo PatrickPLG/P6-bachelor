@@ -140,7 +140,6 @@ class dbHandler {
         });
     }
 
-
     async getAllSensorData() {
         return new Promise((resolve, reject) => {
             this.db.all(`SELECT * FROM SensorData`, (err, rows) => {
