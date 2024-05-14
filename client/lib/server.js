@@ -56,22 +56,17 @@ class FrameJustWorks {
         });
         console.log(`PID:${process.pid} App is running.\nPress CTRL+C to exit. `);
         console.log("_________________________________________________________________________________________");
-
-    /*    this.pipeHandler.createPipe('SensorOne').then(({exitCode,pipeId}) => {
-            this.pipeHandler.onPipeData(pipeId, (data) => {
-                console.log('Received data from pipe: \n', JSON.parse(data.toString()))
-                this.socket.emit("message", data.toString(), () => {
-                    console.log('Data sent to server');
-                });
-            })
-        })*/
     }
 
     registerSensor = (sensorId,type) => {
         this.pipeHandler.createPipe(sensorId).then(({exitCode,pipeId}) => {
             this.pipeHandler.onPipeData(pipeId, (data) => {
                 console.log('Received data from pipe: \n', JSON.parse(data.toString()))
-                this.socket.emit("data", this.packageData(data,type), () => {
+
+                const payload = this.packageData(data,type)
+
+                this.socket.emit("data", payload, (r) => {
+                    if(r) console.log(r);
                     console.log('Data sent to server');
                 });
             })

@@ -19,32 +19,29 @@ class ClientHandler {
         this.io.listen(3000);
 
         this.io.on("connection", (socket) => {
-           //Add client to list of active clients
-            socket.on('register', async (credentials, callback) => {
+            socket.on('register', async (data, callback) => {
                 try {
-                    let jsonCredentials;
+                    // Extract client ID from message
+                    const clientId = this.extractClientIdFromMessage(data);
 
-                    if (typeof credentials === 'string') {
-                        this.addClient(socket, jsonCredentials.CLIENT_ID);
-                        jsonCredentials = JSON.parse(credentials);
-                    } else if (typeof credentials === 'object') {
-                        jsonCredentials = credentials;
-                        this.addClient(socket, jsonCredentials.CLIENT_ID);
-                    } else {
-                        throw new Error('Invalid credentials');
-                    }
-
-                    const clientId = jsonCredentials.CLIENT_ID;
-
-
+                    // if client ID is not found, return an error
                     if (!clientId) {
-                        console.error('No CLIENT_ID provided');
-                        callback(new Error('No CLIENT_ID provided'));
+                        callback(new Error('Invalid credentials'));
                         return;
                     }
 
-                    await dbHandler.registerClient(clientId);
-                    callback(null, 'Client registered successfully');
+                    // Add clientId to list of active clients (with socket)
+                    this.addClient(socket, clientId);
+
+                    // Register client in database (if not already registered)
+                    await dbHandler.registerClient(clientId).then(() => {
+                        callback(null, 'Client registered successfully');
+                    }).catch((error) => {
+                        console.error('Error while registering client:', error);
+                        callback(error);
+                    });
+
+
                 } catch (error) {
                     console.error('Error while registering client:', error);
                     callback(error);
@@ -53,31 +50,46 @@ class ClientHandler {
             });
 
             socket.on('disconnect', () => {
-                this.removeClient(socket.id);
+                this.removeClient(socket.id); // Remove client from list of active clients
             })
-            //socket.on('register', async (credentials, callback) => dbHandler.registerClient(JSON.parse(credentials)))
 
-            socket.on('data', (msg, callback) => {
-                const jsonMsg = JSON.parse(msg);
-                const clientId = jsonMsg.CLIENT_ID;
-                const sensorType = jsonMsg.sensor_type;
-                const timestamp = jsonMsg.timestamp;
-                const sensorData = JSON.stringify(jsonMsg.sensor_data);
-
-
-                dbHandler.getClientById(clientId).then(async (client) => {
-                    if (!client) await this.dbHandler.createClient(clientId)
-
-                    await this.dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId)
-                    await this.eventHandler.runSubbedEvents(clientId, socket);
-
-                }).catch((err) => {
-                    console.error(err.message);
-                })
-                callback();
+            socket.on('data', async (msg, callback) => {
+                // Extract data from message
+                const {clientId, sensorType, timestamp, sensorData} = this.extractDataFromMessage(msg);
+                const validated = this.validateClient(clientId);
+                if (validated) {
+                    await this.dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId) // Store data in database
+                    await this.eventHandler.runSubbedEvents(clientId, socket); // Run subscribed events
+                    callback(null, 'Data received and stored successfully');
+                } else {
+                    console.error('Client not registered');
+                    callback(new Error('Client not registered'));
+                }
             });
         });
 
+    }
+
+    extractClientIdFromMessage(msg) {
+        let clientId = null;
+        if (!msg) return clientId;
+        if (typeof msg !== 'string') clientId = msg.CLIENT_ID
+        else clientId = JSON.parse(msg).CLIENT_ID ?? null;
+        return clientId;
+    }
+
+    extractDataFromMessage(msg) {
+        const jsonMsg = JSON.parse(msg); // Parse message to Object (from JSON string)
+
+        const clientId = jsonMsg.CLIENT_ID; // Extract client ID
+
+        const sensorType = jsonMsg.sensor_type; // Extract sensor type
+
+        const timestamp = jsonMsg.timestamp; // Extract timestamp
+
+        // Extract sensor data (and stringify so we can store it in the database)
+        const sensorData = JSON.stringify(jsonMsg.sensor_data)
+        return {clientId, sensorType, timestamp, sensorData};
     }
 
     addClient(socket, clientID) {
@@ -86,6 +98,14 @@ class ClientHandler {
 
     removeClient(socketID) {
         this.clients = this.clients.filter(client => client.socket.id !== socketID);
+    }
+
+    async validateClient(clientID) {
+        if (!this.getSocketIdByClientId(clientID)) {
+            console.error('Client not registered');
+            return false;
+        }
+        return true;
     }
 
     getSocketIdByClientId(clientID) {

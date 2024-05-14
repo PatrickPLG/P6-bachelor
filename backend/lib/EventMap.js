@@ -3,8 +3,9 @@ const fs = require("node:fs");
 
 
 function findSensorDataFromType(data, type) {
-    console.log('data', data)
+    if (!data || data === []) return null
     const sensor = data.find(sensor => sensor['SensorType'] === type)
+    if (!sensor) return null
     return JSON.parse(sensor['SensorData'])
 }
 
@@ -52,22 +53,24 @@ const eventMap = {
     },
     'showIdle': (socket, data) => {
         const sensor = findSensorDataFromType(data, 'facesDetected')
-        if (sensor['facesDetected'] === 0) {
-            const instruction = new instructionFactory();
-            instruction.addRectangle('#ffffff', 500, 500, 500, 100, 10)
-            instruction.addText('#000000', 500, 480, 50, 'Welcome to McMyFace')
-            instruction.addText('#424242', 500, 521, 21, 'Please show your face to order')
-            const eventInstruction = instruction.getInstructions();
+        if (sensor)
+            if (sensor['facesDetected'] === 0) {
+                const instruction = new instructionFactory();
+                instruction.addRectangle('#ffffff', 500, 500, 500, 100, 10)
+                instruction.addText('#000000', 500, 480, 50, 'Welcome to McMyFace')
+                instruction.addText('#424242', 500, 521, 21, 'Please show your face to order')
+                const eventInstruction = instruction.getInstructions();
 
-            socket.emit('draw', eventInstruction)
+                socket.emit('draw', eventInstruction)
 
-            console.log('data', data)
-        }
+                console.log('data', data)
+            }
 
         return 0
     },
     'showMenu': (socket, data) => {
         const sensor = findSensorDataFromType(data, 'facesDetected')
+        if(!sensor) return 0
         if (sensor['facesDetected'] > 0) {
             const instruction = new instructionFactory();
 
@@ -77,13 +80,12 @@ const eventMap = {
             const burgerImage = fs.readFileSync('./images/b.jpg')
             //encode the file as base64
             const burgerImageBase64 = new Buffer.from(burgerImage).toString('base64')
-            instruction.addImage(burgerImageBase64, -100,250,200,100)
+            instruction.addImage(burgerImageBase64, -100, 250, 200, 100)
 
             //menu item box
             instruction.addRectangle('#ffffff', 0, 280 + 220, 300, 200, 10)
             instruction.addText('#000000', -100, 200 + 220, 24, 'Fries')
-            instruction.addImage(burgerImageBase64, -100,250 + 220,200,100)
-
+            instruction.addImage(burgerImageBase64, -100, 250 + 220, 200, 100)
 
 
             const eventInstruction = instruction.getInstructions();

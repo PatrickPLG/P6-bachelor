@@ -108,6 +108,8 @@ class TextInstruction {
     position = {x: 0, y: 0};
     size = 0;
     text = '';
+    xAlign = 0;
+    yAlign = 0;
 
     constructor(color, x,y, size, text,align) {
         this.color = color;
