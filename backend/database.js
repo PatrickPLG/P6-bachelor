@@ -36,7 +36,7 @@ class dbHandler {
                             FOREIGN KEY (CLIENT_ID) REFERENCES Client(CLIENT_ID),
                             UNIQUE (CLIENT_ID, EventName)
                         )`);
-                    this.db.run(`CREATE TABLE IF NOT EXISTS Saved_Data (
+                    this.db.run(`CREATE TABLE IF NOT EXISTS SavedData (
                             ID INTEGER PRIMARY KEY AUTOINCREMENT,
                             CLIENT_ID TEXT NOT NULL,
                             SensorType TEXT NOT NULL,
