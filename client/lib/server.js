@@ -65,7 +65,7 @@ class FrameJustWorks {
 
                 const payload = this.packageData(data,type)
 
-                this.socket.emit("data", payload, (r) => {
+                this.socket.volatile.emit("data", payload, (r) => {
                     if(r) console.log(r);
                     console.log('Data sent to server');
                 });
@@ -73,14 +73,14 @@ class FrameJustWorks {
         })
     }
 
+    // There is no need to run JSON.stringify() on objects as it will be done for you by the socket.emit method
     packageData = (data,type) => {
-        const payload = {
+        return {
             'CLIENT_ID': this.configuration.credentials,
             timestamp: new Date().getTime(),
             'sensor_type': type,
             'sensor_data': JSON.parse(data),
         }
-        return JSON.stringify(payload);
     }
 }
 

@@ -1,4 +1,5 @@
 const sqlite3 = require("sqlite3").verbose();
+const utils = require("./lib/utils");
 
 //TODO: change users table to clients
 
@@ -59,9 +60,7 @@ class dbHandler {
                         console.error(err.message);
                         reject(err);
                     } else {
-                        console.log(
-                            `A client has been created with CLIENT_ID ${clientId} on row ${this.lastID}`
-                        );
+                        console.log(`A client has been created with CLIENT_ID ${clientId} on row ${this.lastID}`);
                         resolve(this.lastID);
                     }
                 }
@@ -102,7 +101,7 @@ class dbHandler {
 
     async createEvent(clientID, EventName) {
         return new Promise((resolve, reject) => {
-            this.db.run(`INSERT INTO Event(CLIENT_ID, EventName) VALUES (?,?)`, [clientID, EventName],(err, rows) => {
+            this.db.run(`INSERT INTO Event(CLIENT_ID, EventName) VALUES (?,?)`, [clientID, EventName], (err, rows) => {
                 if (err) {
                     console.log(err.message);
                     reject(err);
@@ -115,7 +114,7 @@ class dbHandler {
 
     async saveData(clientID, sensorType, data) {
         return new Promise((resolve, reject) => {
-            this.db.run(`INSERT INTO Saved_Data(CLIENT_ID, sensorType, Data) VALUES (?,?)`, [clientID, sensorType, data],(err, rows) => {
+            this.db.run(`INSERT INTO Saved_Data(CLIENT_ID, sensorType, Data) VALUES (?,?)`, [clientID, sensorType, data], (err, rows) => {
                 if (err) {
                     console.log(err.message);
                     reject(err);
@@ -155,7 +154,7 @@ class dbHandler {
 
     async getSensorType(clientId) {
         return new Promise((resolve, reject) => {
-            this.db.get(`SELECT SensorType FROM Sensor WHERE CLIENT_ID = ?`, [clientId] , (err, rows) => {
+            this.db.get(`SELECT SensorType FROM Sensor WHERE CLIENT_ID = ?`, [clientId], (err, rows) => {
                 if (err) {
                     console.error(err.message);
                     reject(err);
@@ -194,7 +193,7 @@ class dbHandler {
     }
 
     async deleteAllClientEvents(clientId) {
-        return new Promise((resolve,reject) => {
+        return new Promise((resolve, reject) => {
             this.db.run(`DELETE FROM Event WHERE CLIENT_ID = ?`, [clientId], (err) => {
                 if (err) {
                     console.error(err.message);
@@ -257,7 +256,7 @@ class dbHandler {
         // Check if client already exists
         let client = await this.getClientById(clientId);
         if (client) {
-             console.log(`Client ${clientId} already registered.`);
+            console.log(`Client ${clientId} already registered.`);
             return client;
         }
         // Create client
@@ -313,9 +312,7 @@ class dbHandler {
                         console.error(err.message);
                         reject(err);
                     } else {
-                        console.log(
-                            `Sensor data for (${sensorType}) at (${timestamp}) has been updated.`
-                        );
+                        console.log(`Sensor data for (${sensorType}) at (${utils.convertEpochToTime(timestamp)}) has been updated.`);
                         resolve();
                     }
                 }

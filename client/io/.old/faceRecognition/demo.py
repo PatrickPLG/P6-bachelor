@@ -4,11 +4,7 @@
 # Copyright (C) 2021, Shenzhen Institute of Artificial Intelligence and Robotics for Society, all rights reserved.
 # Third party copyrights are property of their respective owners.
 
-import argparse
 import json
-import os
-import sys
-import numpy as np
 import cv2 as cv
 import time
 from yunet import YuNet

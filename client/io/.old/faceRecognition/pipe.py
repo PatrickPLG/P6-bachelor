@@ -28,7 +28,14 @@ def write_pipe(x, target):
         os.write(target, x.encode('utf-8'))  # Write to Pipe
         print('sending: ', x)
     except OSError:
-        raise OSError
+        print('Failed writing to pipe: OSError')
+        get_pipe()
+        pass
+    except BrokenPipeError:
+        print('Failed writing to pipe: Broken Pipe Error')
+        get_pipe()
+        time.sleep(1)
+        pass
 
 
 def close_pipe(target):

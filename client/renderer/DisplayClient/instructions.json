@@ -1,7 +1,7 @@
 [
   {
     "instructionType": "rectangle",
-    "color": "#ffffff",
+    "color": "#8e6f6f",
     "position": {
       "x": 0,
       "y": 280
@@ -34,7 +34,7 @@
   },
   {
     "instructionType": "rectangle",
-    "color": "#ffffff",
+    "color": "#b69b9b",
     "position": {
       "x": 0,
       "y": 500

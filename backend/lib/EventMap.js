@@ -1,5 +1,6 @@
 const {instructionFactory} = require("./intructionFactory");
 const fs = require("node:fs");
+const utils = require("./utils");
 
 
 function findSensorDataFromType(data, type) {
@@ -26,7 +27,6 @@ const eventMap = {
 
             socket.emit('draw', eventInstruction)
 
-            console.log('data', data)
         }
 
 
@@ -45,7 +45,6 @@ const eventMap = {
 
             socket.emit('draw', eventInstruction)
 
-            console.log('data', data)
         }
 
 
@@ -55,6 +54,7 @@ const eventMap = {
         const sensor = findSensorDataFromType(data, 'facesDetected')
         if (sensor)
             if (sensor['facesDetected'] === 0) {
+                console.log(`>> executing event (showIdle) at ${utils.getTimeString()}`)
                 const instruction = new instructionFactory();
                 instruction.addRectangle('#ffffff', 500, 500, 500, 100, 10)
                 instruction.addText('#000000', 500, 480, 50, 'Welcome to McMyFace')
@@ -63,7 +63,6 @@ const eventMap = {
 
                 socket.emit('draw', eventInstruction)
 
-                console.log('data', data)
             }
 
         return 0
@@ -72,10 +71,11 @@ const eventMap = {
         const sensor = findSensorDataFromType(data, 'facesDetected')
         if(!sensor) return 0
         if (sensor['facesDetected'] > 0) {
+            console.log(`>> executing event (showMenu) at ${utils.getTimeString()}`)
             const instruction = new instructionFactory();
 
             //menu item box
-            instruction.addRectangle('#ffffff', 0, 280, 300, 200, 10)
+            instruction.addRectangle('#8e6f6f', 0, 280, 300, 200, 10)
             instruction.addText('#000000', -100, 200, 24, 'Burger')
             const burgerImage = fs.readFileSync('./images/b.jpg')
             //encode the file as base64
@@ -83,7 +83,7 @@ const eventMap = {
             instruction.addImage(burgerImageBase64, -100, 250, 200, 100)
 
             //menu item box
-            instruction.addRectangle('#ffffff', 0, 280 + 220, 300, 200, 10)
+            instruction.addRectangle('#b69b9b', 0, 280 + 220, 300, 200, 10)
             instruction.addText('#000000', -100, 200 + 220, 24, 'Fries')
             instruction.addImage(burgerImageBase64, -100, 250 + 220, 200, 100)
 
@@ -92,7 +92,6 @@ const eventMap = {
 
             socket.emit('draw', eventInstruction)
 
-            console.log('data', data)
         }
 
         return 0

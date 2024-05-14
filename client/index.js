@@ -5,5 +5,5 @@ const clientServer = new FrameJustWorks()
 
 clientServer.start()
 
-clientServer.registerSensor('SensorOne', 'facesDetected')
+clientServer.registerSensor('FaceRecognitionSensor', 'facesDetected')
 

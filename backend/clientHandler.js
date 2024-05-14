@@ -79,16 +79,14 @@ class ClientHandler {
     }
 
     extractDataFromMessage(msg) {
-        const jsonMsg = JSON.parse(msg); // Parse message to Object (from JSON string)
+        const clientId = msg.CLIENT_ID; // Extract client ID
 
-        const clientId = jsonMsg.CLIENT_ID; // Extract client ID
+        const sensorType = msg.sensor_type; // Extract sensor type
 
-        const sensorType = jsonMsg.sensor_type; // Extract sensor type
-
-        const timestamp = jsonMsg.timestamp; // Extract timestamp
+        const timestamp = msg.timestamp; // Extract timestamp
 
         // Extract sensor data (and stringify so we can store it in the database)
-        const sensorData = JSON.stringify(jsonMsg.sensor_data)
+        const sensorData = JSON.stringify(msg.sensor_data)
         return {clientId, sensorType, timestamp, sensorData};
     }
 
