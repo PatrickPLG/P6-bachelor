@@ -19,9 +19,8 @@ class ClientHandler {
         this.io.listen(3000);
 
         this.io.on("connection", (socket) => {
+           //Add client to list of active clients
             socket.on('register', async (credentials, callback) => {
-                console.log('Client trying to register with credentials:', credentials)
-
                 try {
                     let jsonCredentials;
 
@@ -58,7 +57,7 @@ class ClientHandler {
             })
             //socket.on('register', async (credentials, callback) => dbHandler.registerClient(JSON.parse(credentials)))
 
-            socket.on('message', (msg, callback) => {
+            socket.on('data', (msg, callback) => {
                 const jsonMsg = JSON.parse(msg);
                 const clientId = jsonMsg.CLIENT_ID;
                 const sensorType = jsonMsg.sensor_type;
@@ -66,22 +65,17 @@ class ClientHandler {
                 const sensorData = JSON.stringify(jsonMsg.sensor_data);
 
 
-                dbHandler.getClientById(clientId).then(async (row) => {
-                    if (row) {
-                        await this.dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId)
-                        await this.eventHandler.runSubbedEvents(clientId, socket);
-                    } else {
-                        await this.dbHandler.createClient(clientId)
-                    }
+                dbHandler.getClientById(clientId).then(async (client) => {
+                    if (!client) await this.dbHandler.createClient(clientId)
+
+                    await this.dbHandler.updateSensorData(sensorType, timestamp, sensorData, clientId)
+                    await this.eventHandler.runSubbedEvents(clientId, socket);
+
                 }).catch((err) => {
                     console.error(err.message);
                 })
                 callback();
             });
-        });
-
-        this.io.on("disconnect", (socket) => {
-
         });
 
     }
@@ -94,13 +88,8 @@ class ClientHandler {
         this.clients = this.clients.filter(client => client.socket.id !== socketID);
     }
 
-    getClient(clientID) {
-        return this.clients.find(client => client.clientID === clientID);
-    }
-
     getSocketIdByClientId(clientID) {
         const client = this.clients.find(client => client.clientID === clientID);
-        console.log(client)
         return client ? client.socket.id : null;
     }
 

@@ -177,7 +177,12 @@ export class Circle {
 
     handleMouseOver(p: P5) {
         this.isBeingHovered = this.containsXY(p.mouseX, p.mouseY);
-        this.points.forEach(point => point.handleMouseOver(p));
+        let pointHovered = false
+        this.points.forEach(point => {
+            if (point.handleMouseOver(p))
+                pointHovered = true;
+        });
+        return this.isBeingHovered || pointHovered;
     }
 
     handleMouseReleased() {

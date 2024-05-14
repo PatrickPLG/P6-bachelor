@@ -111,6 +111,41 @@ function alignHorizontalCenter() {
                 <VaButton plain icon="align_horizontal_center" @click="alignHorizontalCenter" size="small"/>
             </div>
             
+            <div v-if="selectedShape.constructor.name === 'Text'">
+<!--                <va-button-toggle
+                    plain
+                    v-model="selectedShape.x_align"
+                    :options="[{
+                    value:'right',
+                    icon:'format_align_left'
+                },
+                {
+                    value:'center',
+                    icon:'format_align_center'
+                },
+                {
+                    value:'left',
+                    icon:'format_align_right'
+                }]"
+                />
+                <va-button-toggle
+                    plain
+                    v-model="selectedShape.y_align"
+                    :options="[{
+                    value:'bottom',
+                    icon:'vertical_align_top'
+                },
+                {
+                    value:'center',
+                    icon:'vertical_align_center'
+                },
+                {
+                    value:'top',
+                    icon:'vertical_align_bottom'
+                }]" />-->
+                <va-input v-model="selectedShape.text" label="Text"/>
+            </div>
+            
             <va-color-input indicator="square" label="fill color" v-model="selectedShape._color"/>
             <VaInput v-if="selectedShape.hasOwnProperty('roundness')"
                      v-model="settingsState.roundness"
@@ -129,14 +164,14 @@ function alignHorizontalCenter() {
             <div class="options">
                 
                 
-                <VaInput v-if="selectedShape.hasOwnProperty('_width')"
+                <VaInput v-if="selectedShape.constructor.name === 'Rectangle'"
                          v-model="settingsState.width"
                          class="mb-6 input"
                          label="Width"
                          inner-label
                          @input="setWidth"
                 />
-                <VaInput v-if="selectedShape.hasOwnProperty('_height')"
+                <VaInput v-if="selectedShape.constructor.name === 'Rectangle'"
                          v-model="settingsState.height"
                          class="mb-6 input"
                          inner-label

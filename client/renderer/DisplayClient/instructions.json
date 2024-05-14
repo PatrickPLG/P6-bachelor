@@ -1,22 +1,73 @@
 [
   {
-    "instructionType": "circle",
+    "instructionType": "text",
+    "text": "Patrick er en:",
     "position": {
-      "x": 200,
-      "y": 200
+      "x": 500,
+      "y": 466
     },
-    "size": 200,
-    "color": "#333333"
+    "width": 259.208984375,
+    "height": 48,
+    "xAlign": 0,
+    "yAlign": 0,
+    "size": 44,
+    "textStyle": "normal",
+    "color": "#000000"
+  },
+  {
+    "instructionType": "text",
+    "text": "Peter er en:",
+    "position": {
+      "x": 500,
+      "y": 366
+    },
+    "width": 229.904296875,
+    "height": 48,
+    "xAlign": 0,
+    "yAlign": 0,
+    "size": 44,
+    "textStyle": "normal",
+    "color": "#000000"
+  },
+  {
+    "instructionType": "text",
+    "text": "Gustas er en:",
+    "position": {
+      "x": 500,
+      "y": 566
+    },
+    "width": 264.12890625,
+    "height": 48,
+    "xAlign": 0,
+    "yAlign": 0,
+    "size": 44,
+    "textStyle": "normal",
+    "color": "#000000"
   },
   {
     "instructionType": "rectangle",
     "position": {
-      "x": 628,
-      "y": 330
+      "x": 876,
+      "y": 242
     },
-    "width": 200,
-    "height": 200,
+    "width": 16,
+    "height": 484,
     "color": "#333333",
-    "round": 10
+    "round": 0
+  },
+  {
+    "instructionType": "text",
+    "text": "BOZO",
+    "position": {
+      "x": 886,
+      "y": 302
+    },
+    "width": 935.0537109375,
+    "height": 356,
+    "xAlign": 0,
+    "yAlign": 0,
+    "size": 330,
+    "textStyle": "normal",
+    "color": "#000000"
   }
 ]

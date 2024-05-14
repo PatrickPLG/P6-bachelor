@@ -25,6 +25,7 @@ public class DisplayClient extends PApplet {
   public void setup() {
     frameRate(30);
     shapeMode(CENTER);
+    textMode(MODEL);
     //rectMode(CENTER);
     windowRatio(1920, 1080);
   }
@@ -88,9 +89,13 @@ public class DisplayClient extends PApplet {
     float posY = instruction.getJSONObject("position").getFloat("y");
     float size = instruction.getFloat("size");
     String text = instruction.getString("text");
+    int xAlign = instruction.getInt("xAlign");
+    int yAlign = instruction.getInt("yAlign");
+    float _width = instruction.getFloat("width");
+    float _height = instruction.getFloat("height");
+    textAlign(CENTER,CENTER);
     textSize(size);
-    textAlign(CENTER, CENTER);
-    text(text, posX, posY);
+    text(text, posX, posY,_width,_height);
   }
 
   void drawCircle(JSONObject instruction) {

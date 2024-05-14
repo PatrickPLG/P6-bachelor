@@ -77,6 +77,7 @@ export class Point {
 
     handleMouseOver(p: P5) {
         this.isBeingHovered = this.containsXY(p.mouseX, p.mouseY);
+        return this.isBeingHovered;
     }
 
     handleMouseReleased() {

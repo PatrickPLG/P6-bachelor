@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import P5 from 'p5'
 import {onBeforeMount, onMounted, provide, ref} from "vue";
-import {Point} from "@/lib/shapes/point";
+import {Text} from "@/lib/shapes/text";
 import {Circle} from "@/lib/shapes/circle";
 import {Rectangle} from "@/lib/shapes/rectangle";
 import type {IShape} from "@/lib/shapes/shapes";
@@ -26,15 +26,20 @@ provide('containerStyle', {canvasWidth, canvasHeight});
 onBeforeMount(() => {
     getClients();
 });
-
 onMounted(() => {
     const sketch = (p: P5) => {
+        
+        
         p.setup = () => {
             p.createCanvas(960 , 540 );
         };
+    
         
         p.draw = () => {
             p.background(253);
+            
+        
+            
             try {
                 if (shapes.value)
                     shapes.value.forEach(s => {
@@ -65,12 +70,24 @@ function onpointerdown() {
 function onpointermove(event: PointerEvent) {
     if (!p5Instance.value) return;
     
+    let isHovering = false;
     shapes.value.filter(shape => !shape.isDragged)
-        .forEach(shape => shape.handleMouseOver(p5Instance.value as P5));
+        .forEach(shape => {
+             if(shape.handleMouseOver(p5Instance.value as P5)) {
+                 isHovering = true;
+             }
+           
+        });
     shapes.value.filter(shape => shape.isDragged)
         .forEach(shape => {
             shape.handleMouseDragged(p5Instance.value as P5)
         });
+    
+    if (isHovering) {
+        document.body.style.cursor = 'pointer';
+    } else {
+        document.body.style.cursor = 'default';
+    }
 }
 
 function onpointerup(event: PointerEvent) {
@@ -89,6 +106,13 @@ function addRectangle() {
     if (!p5Instance.value) return;
     const rect = new Rectangle(100, 100, 100, 100);
     shapes.value.push(rect);
+}
+
+function addText() {
+    if (!p5Instance.value) return;
+    const p = p5Instance.value;
+    const text = new Text(p5Instance.value, "Text",p?.width/2,p?.height/2);
+    shapes.value.push(text);
 }
 
 function enableDrag() {
@@ -180,6 +204,7 @@ async function sendJsonToClient() {
                     
                     <va-button preset="secondary" block @click="addCircle">Circle</va-button>
                     <va-button preset="secondary" block @click="addRectangle">Rectangle</va-button>
+                    <va-button preset="secondary" block @click="addText">Text</va-button>
                 
                 
                 </VaButtonDropdown>

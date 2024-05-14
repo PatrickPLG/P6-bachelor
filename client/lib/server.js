@@ -71,7 +71,7 @@ class FrameJustWorks {
         this.pipeHandler.createPipe(sensorId).then(({exitCode,pipeId}) => {
             this.pipeHandler.onPipeData(pipeId, (data) => {
                 console.log('Received data from pipe: \n', JSON.parse(data.toString()))
-                this.socket.emit("message", this.packageData(data,type), () => {
+                this.socket.emit("data", this.packageData(data,type), () => {
                     console.log('Data sent to server');
                 });
             })

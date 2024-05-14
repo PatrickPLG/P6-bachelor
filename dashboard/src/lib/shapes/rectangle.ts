@@ -251,12 +251,22 @@ export class Rectangle extends Rect {
     }
 
     handleMouseOver(p: P5) {
-        this.points.forEach(point => point.handleMouseOver(p));
+        if(!this.dragEnabled) return false;
+
+        let pointHovered = false;
+        this.points.forEach(point => {
+            if(point.handleMouseOver(p)){
+                pointHovered = true;
+            }
+        });
         this.isBeingHovered = this.containsXY(p.mouseX, p.mouseY);
 
+        return this.isBeingHovered || pointHovered;
     }
 
     handleMousePressed(p: P5) {
+        if(!this.dragEnabled) return false;
+
         const pointPressed = this.points.find(point => point.containsXY(p.mouseX, p.mouseY));
 
         if (pointPressed) {
@@ -275,6 +285,8 @@ export class Rectangle extends Rect {
     }
 
     handleMouseDragged(p: P5) {
+        if(!this.dragEnabled) return false;
+
         const pointDragged = this.points.find(point => point.isBeingDragged);
 
         if (pointDragged) {
