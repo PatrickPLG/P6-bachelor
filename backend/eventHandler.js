@@ -7,7 +7,6 @@ class EventHandler {
         this.dbHandler = db;
     }
 
-
     async subscribeToEvent(clientID, eventName) {
         //call db function for adding event to client
         this.dbHandler.createEvent(clientID, eventName);
@@ -18,32 +17,25 @@ class EventHandler {
         await this.dbHandler.deleteEvent(clientID, eventName);
     }
 
-    async getClientData(clientID) {
-        //call db function for getting data from client
-        return await this.dbHandler.getAllClientSensorData(clientID);
-    }
 
-    async runSubbedEvents(clientID,socket) {
-        let subbedEvents = await this.getSubbedEvents(clientID);
+    async runSubbedEvents(clientID, socket) {
+        let subbedEvents = await this.dbHandler.getAllClientEvents(clientID);
 
-       const clientData = await this.getClientData(clientID)
+        const clientData = await this.dbHandler.getAllClientSensorData(clientID);
+        if (!subbedEvents) return;
+        if (!clientData) return;
+        if (clientData.length === 0) {
+            return
+        }
         subbedEvents.forEach(event => {
             const foundEvent = this.eventMap[event.EventName];
 
-             if (foundEvent) {
-                foundEvent(socket,clientData);
+            if (foundEvent) {
+                foundEvent(socket, clientData);
             } else {
                 console.log(`Event ${event} not found in eventMap`);
             }
         });
-    }
-
-    async getSubbedEvents(clientID) {
-        //const subbedEvents = Get subscribed events from client
-        //return subbedEvents
-        let subbedEvents = await this.dbHandler.getAllClientEvents(clientID);
-
-        return subbedEvents;
     }
 }
 

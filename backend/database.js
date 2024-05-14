@@ -261,7 +261,7 @@ class dbHandler {
             return client;
         }
         // Create client
-        console.log(`Registered CLIENT_ID:  ${clientId}.`);
+        console.log(`Registering CLIENT_ID:  ${clientId}.`);
         return await this.createClient(clientId);
     }
 
@@ -314,7 +314,7 @@ class dbHandler {
                         reject(err);
                     } else {
                         console.log(
-                            `Sensor data for ${sensorType} at ${timestamp} has been updated.`
+                            `Sensor data for (${sensorType}) at (${timestamp}) has been updated.`
                         );
                         resolve();
                     }

@@ -50,26 +50,37 @@ public class DisplayClient extends PApplet {
 
         switch (instructionType) {
         case "circle":
+                          println("drawing circle");
+
           setFillColor(instruction);
           drawCircle(instruction);
           break;
         case "rectangle":
+                          println("drawing rectangle");
+
           setFillColor(instruction);
           drawRectangle(instruction);
           break;
         case "ellipse":
+                          println("drawing ellipse");
+
           setFillColor(instruction);
           drawEllipse(instruction);
           break;
         case "triangle":
+                          println("drawing triangle");
+
           setFillColor(instruction);
           drawTriangle(instruction);
           break;
         case "text":
+                  println("drawing text");
+
           setFillColor(instruction);
           drawText(instruction);
           break;
         case "image":
+          println("drawing image");
           drawImage(instruction);
           break;
 
@@ -89,13 +100,29 @@ public class DisplayClient extends PApplet {
     float posY = instruction.getJSONObject("position").getFloat("y");
     float size = instruction.getFloat("size");
     String text = instruction.getString("text");
-    int xAlign = instruction.getInt("xAlign");
-    int yAlign = instruction.getInt("yAlign");
-    float _width = instruction.getFloat("width");
-    float _height = instruction.getFloat("height");
-    textAlign(CENTER,CENTER);
+    // Check if "width" is a number
+    float _width;
+    if (instruction.hasKey("width") && instruction.get("width") instanceof Number) {
+      _width = instruction.getFloat("width");
+    } else {
+      _width = 0; // Set a default value or handle the error
+      println("Invalid or missing 'width' value in JSON object");
+    }
+
+    // Check if "height" is a number
+    float _height;
+    if (instruction.hasKey("height") && instruction.get("height") instanceof Number) {
+      _height = instruction.getFloat("height");
+    } else {
+      _height = 0; // Set a default value or handle the error
+      println("Invalid or missing 'height' value in JSON object");
+    }
+    textAlign(CENTER, CENTER);
     textSize(size);
-    text(text, posX, posY,_width,_height);
+    if (_height > 0 & _width > 0) {
+      text(text, posX, posY, _width, _height);
+    } else
+    text(text, posX, posY);
   }
 
   void drawCircle(JSONObject instruction) {
