@@ -3,6 +3,7 @@ import ClientsCard from "@/components/ClientsCard.vue";
 import InstructionSenderCard from "@/components/instructionSenderCard.vue";
 import ClientEvent from "@/components/EventsCard.vue";
 import CanvasViewer from "@/components/CanvasViewer.vue";
+import EventCreator from "@/components/EventCreator.vue";
 </script>
 
 <template>
@@ -19,10 +20,12 @@ import CanvasViewer from "@/components/CanvasViewer.vue";
         <clients-card/>
         <instruction-sender-card/>
         <client-event/>
+        <event-creator/>
     </section>
 </template>
 
 <style scoped>
+
 
 .logo {
     width: 42px;
@@ -64,6 +67,7 @@ header {
     justify-content: flex-start;
     align-items: flex-start;
     gap: 20px;
+    padding: 20px;
 }
 
 </style>
