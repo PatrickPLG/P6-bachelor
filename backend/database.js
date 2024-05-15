@@ -26,8 +26,9 @@ class dbHandler {
                     this.db.run(`CREATE TABLE IF NOT EXISTS SensorData (
                             SensorType TEXT NOT NULL,
                             Timestamp TEXT NOT NULL,
-                            SensorData INTEGER,
+                            SensorData TEXT,
                             PRIMARY KEY (SensorType, Timestamp)
+                            FOREIGN KEY (SensorType) REFERENCES Sensor(SensorType)
                         )`);
 
                     this.db.run(`CREATE TABLE IF NOT EXISTS Event (
