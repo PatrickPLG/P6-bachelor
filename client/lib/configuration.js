@@ -33,12 +33,12 @@ class Configuration {
 		}
 		
 		// Check if we have an APPLICATION_ID
-		console.log('Checking for application ID..');
+		console.log('Checking for client ID..');
 		this.credentials = await this.readCredentialsFromFile()
 		if (!this.credentials) {
 			return 'No_application_ID_found';
 		}
-		console.log('Application ID found:', this.credentials);
+		console.log('client ID found:', this.credentials);
 		
 		
 		// Add your other checks here

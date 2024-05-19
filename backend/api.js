@@ -63,9 +63,16 @@ class Api {
         });
 
         app.get('/get-all-users', (req, res) => {
-            this.dbHandler.getAllClients().then((rows) => {
+            this.dbHandler.getAllClients().then(async (rows) => {
                 console.log('All users:', rows);
-                res.send(rows);
+                const clients = await Promise.all(rows.map(async (row) => {
+                    return {
+                        ...row,
+                        isActive: await this.clienthandler.validateClient(row.CLIENT_ID)
+                    }
+                }));
+                console.log('All clients:', clients);
+                res.send(clients);
             }).catch((err) => {
                 console.error(err.message);
                 res.status(500).send("Failed to get users");
@@ -137,6 +144,10 @@ class Api {
                 console.error(err.message);
                 res.status(500).send("Failed to get events");
             })
+        })
+
+        app.get('/get-active-clients', (req, res) => {
+
         })
 
 

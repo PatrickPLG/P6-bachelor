@@ -1,0 +1,196 @@
+<script setup lang="ts">
+
+import {computed, inject, onMounted, type PropType, reactive, type Ref, ref, watch} from "vue";
+import {Circle, type IShape, Rectangle} from "../../../lib/shapes/shapes";
+import ShapeViewerItem from "./ShapeViewerItem.vue";
+
+const props = defineProps({
+  shapes: Array as PropType<IShape[]>,
+  selectedShape: Object as PropType<IShape | null>
+})
+const emit = defineEmits(['delete', 'select', 'moveBackward', 'moveForward']);
+
+const containerStyle = inject('containerStyle') as { canvasWidth: Ref<number>, canvasHeight: Ref<number> };
+
+const settingsState = reactive({
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0,
+  color: '',
+  size: 0,
+  roundness: 0
+})
+
+watch(() => props.selectedShape, (newVal) => {
+  if (!newVal) return;
+  settingsState.x = newVal.x;
+  settingsState.y = newVal.y;
+  settingsState.width = newVal.width;
+  settingsState.height = newVal.height;
+  settingsState.color = newVal.color;
+  settingsState.size = newVal.width;
+
+  if (newVal instanceof Rectangle)
+    settingsState.roundness = newVal.roundness;
+
+})
+
+function setWidth() {
+  if (!props.selectedShape) return;
+  if (props.selectedShape instanceof Rectangle)
+    props.selectedShape.setWidth(settingsState.width)
+}
+
+function setY() {
+  if (!props.selectedShape) return;
+  props.selectedShape.setY(settingsState.y)
+}
+
+function setX() {
+  if (!props.selectedShape) return;
+  props.selectedShape.setX(settingsState.x)
+}
+
+function setSize() {
+  if (!props.selectedShape) return;
+  if (props.selectedShape instanceof Circle)
+    props.selectedShape.setSize(settingsState.size)
+}
+
+function setRoundness() {
+  if (!props.selectedShape) return;
+  if (props.selectedShape instanceof Rectangle)
+    props.selectedShape.setRoundness(settingsState.roundness)
+}
+
+function setHeight() {
+  if (!props.selectedShape) return;
+  if (props.selectedShape instanceof Rectangle)
+    props.selectedShape.setHeight(settingsState.height)
+}
+
+function onMoveBackward() {
+  emit('moveBackward', props.selectedShape)
+}
+
+function onMoveForward() {
+  emit('moveForward', props.selectedShape)
+}
+
+function centerShape() {
+  if (!props.selectedShape) return;
+  props.selectedShape.centerShape(containerStyle.canvasWidth.value, containerStyle.canvasHeight.value)
+}
+
+function alignVerticalCenter() {
+  if (!props.selectedShape) return;
+  props.selectedShape.alignVerticalCenter(containerStyle.canvasHeight.value)
+}
+
+function alignHorizontalCenter() {
+  if (!props.selectedShape) return;
+  props.selectedShape.alignHorizontalCenter(containerStyle.canvasWidth.value)
+}
+
+</script>
+
+<template>
+  <div class="shapeViewer">
+    <div class="shapeViewer__items" :class="{'showSetting':selectedShape}">
+      <ShapeViewerItem v-for="shape in shapes" :shape="shape" @move-backward="onMoveBackward"
+                       @moveForward="onMoveForward" @delete="emit('delete',shape)"
+                       @select="emit('select', shape);" :selected-shape="selectedShape"/>
+    </div>
+    <div class="selectedSettings" v-if="selectedShape">
+      <div class="header">
+        <h3>{{ selectedShape.constructor.name }}</h3>
+
+        <VaButton plain icon="center_focus_strong" @click="centerShape" size="small"/>
+        <VaButton plain icon="align_vertical_center" @click="alignVerticalCenter" size="small"/>
+        <VaButton plain icon="align_horizontal_center" @click="alignHorizontalCenter" size="small"/>
+      </div>
+
+      <div v-if="selectedShape.constructor.name === 'Text'">
+        <va-input v-model="selectedShape.text" label="Text"/>
+      </div>
+
+      <va-color-input indicator="square" label="fill color" v-model="selectedShape._color"/>
+      <VaInput v-if="selectedShape.hasOwnProperty('roundness')"
+               v-model="settingsState.roundness"
+               inner-label
+               @input="setRoundness"
+               label="roundness"/>
+      <VaInput v-if="selectedShape instanceof Circle"
+               v-model="settingsState.size"
+               label="Size"
+               inner-label
+               @input="setSize"/>
+      <VaInput v-if="selectedShape.constructor.name === 'Rectangle'"
+               v-model="settingsState.width"
+               label="Width"
+               inner-label
+               @input="setWidth"/>
+      <VaInput v-if="selectedShape.constructor.name === 'Rectangle'"
+               v-model="settingsState.height"
+               inner-label
+               label="Height"
+               @input="setHeight"/>
+      <VaInput
+        v-model="settingsState.x"
+        inner-label
+        label="x"
+        @input="setX"/>
+      <VaInput
+        v-model="settingsState.y"
+        inner-label
+        label="y"
+        @input="setY"/>
+
+
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.shapeViewer {
+  display: grid;
+  grid-template-rows: 1fr 300px;
+  overflow: hidden;
+  width: 250px;
+  border-left: 1px solid var(--va-background-border);
+
+  .shapeViewer__items {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .selectedSettings {
+    max-height: 300px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    gap: 10px;
+    padding: 10px 15px 10px 10px;
+    border-top: 1px solid var(--va-background-border);
+
+    h3 {
+      cursor: default;
+    }
+
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+}
+
+</style>

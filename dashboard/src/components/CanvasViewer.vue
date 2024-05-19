@@ -74,6 +74,7 @@ function getSaveNames() {
     }
     return [];
 }
+
 function saveToLocalStorage() {
     if (shapes.value.length === 0) return;
     const shapesMap = shapes.value.map(shape => shape?.toJSON());
@@ -252,27 +253,30 @@ async function sendJsonToClient() {
 <template>
     
     
-
     <section class="editor">
         <div class="toolbar">
-<!--            <select v-model="selectedClient">
-                <option v-for="client in clients" :value="client.CLIENT_ID">
-                    {{ client.CLIENT_ID }}
-                </option>
-            </select>-->
+            
             <VaMenu
                 
                 :options="['Option 1', 'Option 2', 'Option 3']"
                 @selected="() => console.log($event)"
             >
                 <template #anchor>
-                    <VaButton>Open menu</VaButton>
+                    <VaButton  plain icon="menu"></VaButton>
                 </template>
             </VaMenu>
-         
-            <va-button v-if="selectedClient" @click="sendJsonToClient">Export to client</va-button>
-            <va-button  @click="showSaveModal = !showSaveModal">Save</va-button>
-            <va-button @click="showLoadModal = !showLoadModal">Load</va-button>
+            <div class="sendToClientContainer">
+                <select v-model="selectedClient">
+                    <option v-for="client in clients" :value="client.CLIENT_ID">
+                        {{ client.CLIENT_ID }}
+                    </option>
+                </select>
+                <va-button preset="secondary" size="small" v-if="selectedClient" @click="sendJsonToClient">Export to client</va-button>
+            </div>
+            <div style="display: flex;gap: 10px">
+                <va-button preset="secondary" size="small" @click="showSaveModal = !showSaveModal">Save</va-button>
+                <va-button preset="secondary" size="small" @click="showLoadModal = !showLoadModal">Load</va-button>
+            </div>
         </div>
         
         <div class="editorContainer">
@@ -314,7 +318,7 @@ async function sendJsonToClient() {
         size="auto"
         @ok="saveToLocalStorage"
     >
-        <va-input v-model="saveName" placeholder="name" />
+        <va-input v-model="saveName" placeholder="name"/>
     </VaModal>
     <VaModal
         v-model="showLoadModal"
@@ -324,9 +328,9 @@ async function sendJsonToClient() {
         @cancel="selectedSave = ''"
         @ok="loadFromLocalStorage"
     >
-        <va-select v-model="selectedSave" :options="saves" placeholder="name" />
+        <va-select v-model="selectedSave" :options="saves" placeholder="name"/>
     </VaModal>
-    
+
 </template>
 
 <style scoped>
@@ -358,10 +362,21 @@ async function sendJsonToClient() {
     }
     
     .toolbar {
+        display: flex;
         width: 100%;
-        justify-content: center;
-        align-items: flex-start;
-        background-color: #dadada;
+        height: 40px;
+        padding-left: 20px;
+        padding-right: 20px;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #ededed;
+        
+        .sendToClientContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
     }
 }
 
