@@ -1,7 +1,9 @@
 const {instructionFactory} = require("./intructionFactory");
 const fs = require("node:fs");
 const utils = require("./utils");
+const db = require('./database.js')
 
+dbHandler = new db();
 
 function findSensorDataFromType(data, type) {
     if (!data || data === []) return null
@@ -95,7 +97,16 @@ const eventMap = {
         }
 
         return 0
-    }
+    },
+
+    // 'saveData': (socket, data) => {
+    //     console.log('executing saveData');
+    //     const sensor = findSensorDataFromType(data, 'facesDetected')
+    //     if (sensor['facesDetected'] > 5) {
+    //         dbHandler.saveData(sensor['facesDetected'])
+    //     }
+    //     return 0
+    // }
 }
 
 

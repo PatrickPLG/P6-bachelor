@@ -1,22 +1,11 @@
 [
   {
-    "instructionType": "rectangle",
-    "position": {
-      "x": 382,
-      "y": 192
-    },
-    "width": 628,
-    "height": 482,
-    "color": "#333333",
-    "round": 0
-  },
-  {
     "instructionType": "circle",
     "position": {
-      "x": 644,
-      "y": 362
+      "x": 869,
+      "y": 566
     },
-    "size": 200,
-    "color": "#e63b7a"
+    "size": 612,
+    "color": "#333333"
   }
 ]
