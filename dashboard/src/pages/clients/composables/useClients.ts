@@ -59,7 +59,7 @@ export const UseClients = () => {
   }
 
 
-  const updateSubscribedEvents = async (clientId: string, events: IEvent[]) => {
+  const updateSubscribedEvents = async (clientId: string, events: String[]) => {
     await axios.post(`http://localhost:3001/update-client-subscribed-events`, {
       clientId,
       events
