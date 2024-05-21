@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import P5 from 'p5'
-import {computed, onBeforeMount, onMounted, provide, ref} from "vue";
+import {computed, onBeforeMount, onMounted, provide, ref, watch, watchEffect} from "vue";
 import {Text} from "../../lib/shapes/text";
 import {Circle} from "../../lib/shapes/circle";
 import {Rectangle} from "../../lib/shapes/rectangle";
@@ -11,7 +11,7 @@ import {useColors} from "vuestic-ui";
 import axios from "axios";
 import {useToast} from "vuestic-ui";
 import {Image} from "../../lib/shapes/image";
-import {useFileDialog} from "@vueuse/core";
+import {useDisplayMedia, useFileDialog} from "@vueuse/core";
 
 const canvasContainer = ref<HTMLElement | null>(null);
 const p5Instance = ref<P5 | null>(null);
@@ -309,6 +309,7 @@ const clientSelectorOptions = computed(() => {
   });
 });
 
+
 </script>
 
 <template>
@@ -385,6 +386,7 @@ const clientSelectorOptions = computed(() => {
   >
     <va-select v-model="selectedClient" :options="clientSelectorOptions" placeholder="Select client"/>
   </VaModal>
+
 
 </template>
 
