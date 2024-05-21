@@ -39,12 +39,8 @@ class dbHandler {
                             UNIQUE (CLIENT_ID, EventName)
                         )`);
                     this.db.run(`CREATE TABLE IF NOT EXISTS SavedData (
-                            ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                            CLIENT_ID TEXT NOT NULL,
-                            SensorType TEXT NOT NULL,
-                            Data TEXT NOT NULL,
-                            FOREIGN KEY (CLIENT_ID) REFERENCES Client(CLIENT_ID),
-                            FOREIGN KEY (SensorType) REFERENCES Sensor(SensorType)
+                            DataName TEXT PRIMARY KEY NOT NULL,
+                            Data TEXT NOT NULL
                     )`)
                 });
             }
@@ -113,9 +109,9 @@ class dbHandler {
         })
     }
 
-    async saveData(clientID, sensorType, data) {
+    async saveNewData(dataName, data) {
         return new Promise((resolve, reject) => {
-            this.db.run(`INSERT INTO Saved_Data(CLIENT_ID, sensorType, Data) VALUES (?,?)`, [clientID, sensorType, data], (err, rows) => {
+            this.db.run(`INSERT INTO Saved_Data(DataName, Data) VALUES (?,?)`, [dataName, data], (err, rows) => {
                 if (err) {
                     console.log(err.message);
                     reject(err);
