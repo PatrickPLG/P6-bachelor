@@ -1,4 +1,5 @@
 import axios from "axios";
+import {useToast} from "vuestic-ui";
 
 
 interface IClient {
@@ -58,9 +59,6 @@ export const UseClients = () => {
   }
 
 
-
-
-
   const updateSubscribedEvents = async (clientId: string, events: IEvent[]) => {
     await axios.post(`http://localhost:3001/update-client-subscribed-events`, {
       clientId,
@@ -83,8 +81,10 @@ export const UseClients = () => {
     return response.data
   }
 
-  const registerClient = async (newClientId: string) => {
-    await axios.post('http://localhost:3001/register-client', {CLIENT_ID: newClientId});
+  const registerClient = async () => {
+    const id = await generateCredentials()
+    if (id)
+      await axios.post('http://localhost:3001/register-client', {CLIENT_ID: id})
   }
 
   return {

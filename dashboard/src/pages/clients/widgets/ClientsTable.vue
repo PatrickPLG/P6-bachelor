@@ -3,8 +3,7 @@ import axios from 'axios'
 import {defineVaDataTableColumns, useToast} from "vuestic-ui";
 import {onMounted, ref} from "vue";
 import {IClientTableData, UseClients} from "../composables/useClients";
-import {UserRole} from "../types";
-import {data} from "autoprefixer";
+
 
 const useClients = UseClients()
 
@@ -63,6 +62,10 @@ const formatEvents = (events: string[]) => {
   return events.join(', ')
 }
 
+
+defineExpose({
+  getTableData
+})
 
 </script>
 

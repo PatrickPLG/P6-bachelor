@@ -1,17 +1,28 @@
 <script setup lang="ts">
 import {useModal, useToast} from 'vuestic-ui'
 import ClientsTable from "./widgets/ClientsTable.vue";
-
-
-
-
+import {UseClients} from "./composables/useClients";
+import {ref} from "vue";
 
 
 const {init: notify} = useToast()
 
+const useClients = UseClients()
 
+const table = ref<InstanceType<typeof ClientsTable> | null>()
 
+const onCreateClient = () => {
+ useClients.registerClient().then(() => {
+   useToast().notify({
+     title: 'Success',
+     message: 'Successfully created new client',
+     color: 'ok',
+   })
+   if (table.value)
+     table.value.getTableData();
+ })
 
+}
 
 </script>
 
@@ -30,16 +41,16 @@ const {init: notify} = useToast()
               { label: 'Inactive', value: false },
             ]"
           />
-          <VaInput  placeholder="Search">
+          <VaInput placeholder="Search">
             <template #prependInner>
               <VaIcon name="search" color="secondary" size="small"/>
             </template>
           </VaInput>
         </div>
-        <VaButton >Add User</VaButton>
+        <VaButton @click="onCreateClient">Create Client</VaButton>
       </div>
 
-      <ClientsTable/>
+      <ClientsTable ref="table"/>
     </VaCardContent>
   </VaCard>
 
