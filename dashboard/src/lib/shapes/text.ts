@@ -1,8 +1,8 @@
 import type P5 from "p5";
-import {Point} from "@/lib/shapes/point";
-import {Vector} from "@/lib/shapes/vector";
-import {Rect} from "@/lib/shapes/rectangle";
-import {getClickColor, getHoverColor} from "@/lib/util_functions";
+import {Point} from "./point";
+import {Vector} from "./vector";
+import {Rect} from "./rectangle";
+import {getClickColor, getHoverColor} from "../util_functions"
 
 export class Text extends Rect {
     text: string;

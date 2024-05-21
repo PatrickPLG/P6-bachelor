@@ -1,23 +1,57 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import DashboardView from "@/views/DashboardView.vue";
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+
+import AppLayout from '../layouts/AppLayout.vue'
+
+
+const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: { name: 'clients' },
+  },
+  {
+    name: 'admin',
+    path: '/',
+    component: AppLayout,
+    redirect: { name: 'clients' },
+    children: [
+      {
+        name: 'clients',
+        path: 'clients',
+        component: () => import('../pages/clients/ClientsPage.vue'),
+      },
+      {
+        name: 'editor',
+        path: 'editor',
+        component: () => import('../pages/editor/EditorPage.vue'),
+      },
+      {
+        name: 'settings',
+        path: 'settings',
+        component: () => import('../pages/settings/Settings.vue'),
+      },
+      {
+        name: 'sensors',
+        path: 'sensors',
+        component: () => import('../pages/sensors/SensorsPage.vue'),
+      },
+    ],
+  }
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: DashboardView
-    },
-    {
-      path: '/editor',
-      name: 'Editor',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/Editor.vue')
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
     }
-  ]
+    // For some reason using documentation example doesn't scroll on page navigation.
+    if (to.hash) {
+      return { el: to.hash, behavior: 'smooth' }
+    } else {
+      window.scrollTo(0, 0)
+    }
+  },
+  routes,
 })
 
 export default router

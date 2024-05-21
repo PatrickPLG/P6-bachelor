@@ -1,10 +1,7 @@
-import {dist} from "@/lib/util_functions";
 import P5 from "p5";
-import {Vector} from "@/lib/shapes/vector";
-import {
-    DEFAULT_POINT_CLICK_COLOR,
-    DEFAULT_POINT_FILL_COLOR, DEFAULT_POINT_HOVER_COLOR
-} from "@/lib/settings";
+import {DEFAULT_POINT_CLICK_COLOR, DEFAULT_POINT_FILL_COLOR, DEFAULT_POINT_HOVER_COLOR} from "../settings";
+import {Vector} from "./vector";
+import {dist} from "../util_functions";
 
 export class Point {
     pos: Vector

@@ -1,8 +1,10 @@
-import {Vector} from "@/lib/shapes/vector";
-import {Point} from "@/lib/shapes/point";
 import type P5 from "p5";
-import {dist, getClickColor, getHoverColor} from "@/lib/util_functions";
-import {DEFAULT_FILL_COLOR} from "@/lib/settings";
+import {DEFAULT_FILL_COLOR} from "../settings";
+import {Vector} from "./vector";
+import {Point} from "./point";
+import {getHoverColor} from "chart.js/helpers";
+import {getClickColor} from "../util_functions";
+import {dist} from "../util_functions";
 
 export class Circle {
     pos: Vector

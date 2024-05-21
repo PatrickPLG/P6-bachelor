@@ -1,7 +1,9 @@
 import P5 from 'p5';
-import {Point} from './point';
-import {DEFAULT_CLICK_COLOR, DEFAULT_FILL_COLOR} from "@/lib/settings";
-import {getClickColor, getHoverColor} from "@/lib/util_functions";
+import {DEFAULT_FILL_COLOR} from "../settings";
+import {Point} from "./point";
+import {getHoverColor} from "chart.js/helpers";
+import {getClickColor} from "../util_functions";
+
 
 export class Rect {
     _x: number;
