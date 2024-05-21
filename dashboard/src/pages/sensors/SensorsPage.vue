@@ -12,7 +12,6 @@ import SensorCards from "./widgets/SensorCards.vue";
       <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
         <div class="flex flex-col md:flex-row gap-2 justify-start">
         </div>
-        <VaButton icon="add" @click="">create</VaButton>
       </div>
       <SensorCards/>
 

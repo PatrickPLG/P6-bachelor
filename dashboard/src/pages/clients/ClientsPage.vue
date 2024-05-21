@@ -5,7 +5,6 @@ import {UseClients} from "./composables/useClients";
 import {ref} from "vue";
 
 
-const {init: notify} = useToast()
 
 const useClients = UseClients()
 
@@ -33,23 +32,9 @@ const onCreateClient = () => {
     <VaCardContent>
       <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
         <div class="flex flex-col md:flex-row gap-2 justify-start">
-          <VaButtonToggle
-            color="background-element"
-            border-color="background-element"
-            :options="[
-              { label: 'Active', value: true },
-              { label: 'Inactive', value: false },
-            ]"
-          />
-          <VaInput placeholder="Search">
-            <template #prependInner>
-              <VaIcon name="search" color="secondary" size="small"/>
-            </template>
-          </VaInput>
         </div>
-        <VaButton @click="onCreateClient">Create Client</VaButton>
+        <VaButton icon="add" preset="secondary" plain @click="onCreateClient" />
       </div>
-
       <ClientsTable ref="table"/>
     </VaCardContent>
   </VaCard>

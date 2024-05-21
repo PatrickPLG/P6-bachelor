@@ -23,13 +23,6 @@ const getSensorData = () => {
   })
 }
 
-const sensorColumns = defineVaDataTableColumns([
-  {label: 'ID', key: 'ID', sortable: true},
-  {label: 'Sensor ID', key: 'SENSOR_ID', sortable: true},
-  {label: 'Events', key: 'events', sortable: true},
-  {label: 'Active', key: 'isActive', sortable: true},
-  {label: ' ', key: 'actions', align: 'right'},
-])
 
 </script>
 
@@ -69,10 +62,10 @@ const sensorColumns = defineVaDataTableColumns([
 
 
         </div>
-        <div class="flex justify-between">
+<!--        <div class="flex justify-between">
           <VaButton preset="secondary" icon="mso-edit" color="secondary"/>
           <VaButton preset="secondary" icon="mso-delete" color="danger"/>
-        </div>
+        </div>-->
       </VaCardContent>
     </VaCard>
   </VaInnerLoading>

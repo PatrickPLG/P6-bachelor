@@ -62,7 +62,6 @@ const formatEvents = (events: string[]) => {
   return events.join(', ')
 }
 
-
 defineExpose({
   getTableData
 })
