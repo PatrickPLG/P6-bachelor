@@ -3,12 +3,19 @@ import axios from 'axios'
 import {defineVaDataTableColumns, useToast} from "vuestic-ui";
 import {onMounted, ref} from "vue";
 import {IClientTableData, UseClients} from "../composables/useClients";
+import ClientEditModal from "./ClientEditModal.vue";
 
+interface IClientData {
+  events: string[],
+  ID: number,
+  CLIENT_ID: string,
+  isActive: boolean
+}
 
 const useClients = UseClients()
-
+const showEditModal = ref(false)
 const tableData = ref<IClientTableData[]>([])
-
+const selectedClient = ref<IClientData | null>(null)
 const getTableData = () => {
 
   useClients.getClientTableData().then((data) => {
@@ -62,6 +69,11 @@ const formatEvents = (events: string[]) => {
   return events.join(', ')
 }
 
+const onEdit = (client: IClientData) => {
+  selectedClient.value = client
+  showEditModal.value = true
+}
+
 defineExpose({
   getTableData
 })
@@ -104,7 +116,7 @@ defineExpose({
           size="small"
           icon="mso-edit"
           aria-label="Edit user"
-          @click="console.log('edit')"
+          @click="onEdit(rowData as IClientData)"
         />
         <VaButton
           preset="primary"
@@ -118,6 +130,7 @@ defineExpose({
     </template>
   </VaDataTable>
 
+  <ClientEditModal v-show="selectedClient" v-model="showEditModal" :selected-client="selectedClient" @update="getTableData"/>
   <!--
     <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
       <div>
