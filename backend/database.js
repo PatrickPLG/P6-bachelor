@@ -111,7 +111,7 @@ class dbHandler {
 
     async saveNewData(dataName, data) {
         return new Promise((resolve, reject) => {
-            this.db.run(`INSERT INTO Saved_Data(DataName, Data) VALUES (?,?)`, [dataName, data], (err, rows) => {
+            this.db.run(`INSERT INTO SavedData(DataName, Data) VALUES (?,?)`, [dataName, data], (err, rows) => {
                 if (err) {
                     console.log(err.message);
                     reject(err);
@@ -122,14 +122,14 @@ class dbHandler {
         })
     }
 
-    async deleteSavedData(clientID, sensorType) {
+    async deleteSavedData(dataName) {
         return new Promise((resolve, reject) => {
-            this.db.run(`DELETE FROM Saved_Data WHERE CLIENT_ID = ? AND SensorType = ?`, [clientID, sensorType], (err) => {
+            this.db.run(`DELETE FROM SavedData WHERE DataName = ?`, [dataName], (err) => {
                 if (err) {
                     console.error(err.message);
                     reject(err);
                 } else {
-                    console.log(`Saved_Data with CLIENT_ID ${clientID} and SensorType ${sensorType} has been deleted.`);
+                    console.log(`SavedData with DataName ${dataName}.`);
                     resolve();
                 }
             });
