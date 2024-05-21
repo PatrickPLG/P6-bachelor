@@ -19,6 +19,7 @@ const eventMap = {
 
 
         if (sensor['facesDetected'] > 1) {
+            dbHandler.saveNewData("Test", sensor['facesDetected']);
             const instruction = new instructionFactory();
             instruction.addText('#FF0000', 250, 50, 1000, 50, 50, 'faces detected')
             instruction.addText('#FF0000', 250, 50, 1000, 50, 50, `${sensor['facesDetected']} faces detected`)
