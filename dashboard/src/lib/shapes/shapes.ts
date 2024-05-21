@@ -5,5 +5,7 @@ import {Point} from "./point"
 import {Vector} from "./vector"
 import {Rectangle} from "./rectangle";
 import {Text} from "./text"
+import {Image} from './image';
+
 export type IShape = Circle | Rectangle | Text;
-export {Circle, Point, Vector, Rectangle,Text};
+export {Circle, Point, Vector, Rectangle, Text, Image};

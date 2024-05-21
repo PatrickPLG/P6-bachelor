@@ -16,7 +16,7 @@ class Api {
 
         app.use(cors()); // cors is security feature needed for my html test, since it would establish a connection otherwise. idk if we need it
 
-        app.use(express.json());
+        app.use(express.json({limit: '1gb'}));
 
         app.get('/credentials', (req, res) => {
             const newClientId = require('uuid').v4()

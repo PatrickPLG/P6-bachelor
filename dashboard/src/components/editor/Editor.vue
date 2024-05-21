@@ -10,7 +10,8 @@ import {array_move} from "../../lib/util_functions";
 import {useColors} from "vuestic-ui";
 import axios from "axios";
 import {useToast} from "vuestic-ui";
-
+import {Image} from "../../lib/shapes/image";
+import {useFileDialog} from "@vueuse/core";
 
 const canvasContainer = ref<HTMLElement | null>(null);
 const p5Instance = ref<P5 | null>(null);
@@ -196,6 +197,39 @@ function addText(x?: number, y?: number) {
   shapes.value.push(text);
 }
 
+const {open, onChange} = useFileDialog({
+  accept: 'image/*',
+  multiple: false,
+  reset: true,
+
+
+})
+onChange((file) => {
+  if (!file) return;
+  addImage(file);
+});
+
+function addImage(file: FileList, x?: number, y?: number, width?: number, height?: number) {
+  if (!file) return;
+  const img = file[0];
+  //convert to base64
+  const reader = new FileReader();
+  reader.readAsDataURL(img);
+  reader.onload = function () {
+    const base64 = reader.result;
+    if (!p5Instance.value) return;
+    if (x === undefined || y === undefined || width === undefined || height === undefined) {
+      const image = new Image(100, 100, 100, 100, undefined, base64 as string, p5Instance.value);
+      shapes.value.push(image);
+    } else {
+      const image = new Image(x, y, width, height, undefined, base64 as string, p5Instance.value);
+      shapes.value.push(image);
+    }
+  }
+
+
+}
+
 function enableDrag() {
   shapes.value.forEach(shape => shape.dragEnabled = true);
 }
@@ -299,6 +333,7 @@ const clientSelectorOptions = computed(() => {
           <va-button preset="secondary" block @click="addCircle">Circle</va-button>
           <va-button preset="secondary" block @click="addRectangle">Rectangle</va-button>
           <va-button preset="secondary" block @click="addText">Text</va-button>
+          <va-button preset="secondary" block @click="open">Image</va-button>
         </VaButtonDropdown>
       </div>
     </div>
@@ -309,7 +344,7 @@ const clientSelectorOptions = computed(() => {
            @pointermove="onpointermove"
            :style="containerStyle"
            class="editorCanvas"/>
-      <p class="canvasSize">{{canvasWidth * 2}} x {{canvasHeight * 2}}</p>
+      <p class="canvasSize">{{ canvasWidth * 2 }} x {{ canvasHeight * 2 }}</p>
 
       <ShapeViewer :shapes="shapes" :selected-shape="selectedShape"
                    @moveBackward="moveBack"
@@ -394,6 +429,7 @@ const clientSelectorOptions = computed(() => {
       height: 540px;
       margin: 20px;
     }
+
     .canvasSize {
       position: absolute;
       bottom: 0;
