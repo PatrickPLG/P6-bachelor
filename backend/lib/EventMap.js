@@ -13,12 +13,9 @@ function findSensorDataFromType(data, type) {
 const eventMap = {
     'FacesDetected': (socket, data) => {
         console.log('executing TemperatureExceedsMax');
-
-
         const sensor = findSensorDataFromType(data, 'facesDetected')
 
-
-        if (sensor['facesDetected'] > 1) {
+        if (sensor['facesDetected'] > 0) {
             dbHandler.saveNewData("Test", sensor['facesDetected']);
             const instruction = new instructionFactory();
             instruction.addText('#FF0000', 250, 50, 1000, 50, 50, 'faces detected')
@@ -70,7 +67,7 @@ const eventMap = {
     },
     'showMenu': (socket, data) => {
         const sensor = findSensorDataFromType(data, 'facesDetected')
-        if(!sensor) return 0
+        if (!sensor) return 0
         if (sensor['facesDetected'] > 0) {
             console.log(`>> executing event (showMenu) at ${utils.getTimeString()}`)
             const instruction = new instructionFactory();

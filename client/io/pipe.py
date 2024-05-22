@@ -9,7 +9,7 @@ PIPE = 'SensorOne'
 
 # config
 printEveryXSeconds = 3
-printDataTransmitted = False
+printDataTransmitted = True
 
 # time since last console print
 last_time_printed = time.time()
