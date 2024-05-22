@@ -77,7 +77,15 @@ export class Image extends Rect {
   }
 
   scaleToFitCanvas() {
-    this.img.resize(0, 1080 / 2)
+
+    if (this.img.width > 1920 / 2 && this.img.height > 1080 / 2) {
+      this.img.resize(1920 / 2, 0)
+      this.img.resize(0, 1080 / 2)
+    } else if (this.img.width > this.img.height) {
+      this.img.resize(1920 / 2, 0)
+    } else {
+      this.img.resize(0, 1080 / 2)
+    }
     this.setWidth(this.img.width)
     this.setHeight(this.img.height)
     this.centerShape(1920 / 2, 1080 / 2)
