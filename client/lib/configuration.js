@@ -10,21 +10,7 @@ class Configuration {
 	}
 	
 	
-	checkForInternetConnection = () => {
-		console.log('Checking for internet connection..');
-		const interfaces = this.getNetworkInterfaces();
-		for (let osInterface in interfaces) {
-			for (let network in interfaces[osInterface]) {
-				if (interfaces[osInterface][network].internal === false) {
-					console.log('Internet connection available');
-					return true;
-				}
-			}
-		}
-		console.log('No internet connection available');
-		return false;
-	}
-	
+
 	validateConfiguration = async () => {
 		console.log('Validating configuration..');
 		// Check if client has internet connection
@@ -50,8 +36,6 @@ class Configuration {
 	}
 	
 	writeCredentialsToFile = async (credentials) => {
-		const fs = require('fs');
-		const path = require('path');
 		const filePath = path.join(__dirname, 'credentials.json');
 		
 		
@@ -70,8 +54,6 @@ class Configuration {
 	}
 	
 	readCredentialsFromFile = async () => {
-		const fs = require('fs');
-		const path = require('path');
 		const filePath = path.join(__dirname, 'credentials.json');
 		
 		// check if file exists before attempting to read
@@ -88,8 +70,7 @@ class Configuration {
 	getCredentialsFromServer = async () => {
 		return new Promise((resolve, reject) => {
 			console.log('Getting credentials from server..');
-			const axios = require('axios');
-			
+
 			axios.get(apiAuthURL + '/credentials')
 				.then((response) => {
 					console.log('Credentials received from server:', response.data);
@@ -104,7 +85,22 @@ class Configuration {
 		
 		
 	}
-	
+
+	checkForInternetConnection = () => {
+		console.log('Checking for internet connection..');
+		const interfaces = this.getNetworkInterfaces();
+		for (let osInterface in interfaces) {
+			for (let network in interfaces[osInterface]) {
+				if (interfaces[osInterface][network].internal === false) {
+					console.log('Internet connection available');
+					return true;
+				}
+			}
+		}
+		console.log('No internet connection available');
+		return false;
+	}
+
 	getNetworkInterfaces = () => {
 		return require('os').networkInterfaces();
 	}

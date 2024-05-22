@@ -27,7 +27,12 @@ class FrameJustWorks {
             if (error) { //TODO: errors should probably be handled by the configuration module
                 console.log('Error:', error);
                 if (error === 'No_application_ID_found') {
-                    await this.configuration.getCredentialsFromServer();
+                    try {
+                        await this.configuration.getCredentialsFromServer();
+                    } catch (e) {
+                        console.log('Error getting credentials from server');
+                        process.exit(1);
+                    }
                 }
                 if (error === 'No_internet_connection_available') {
                     // implement logic to bootstrap the application to get internet connection
@@ -37,20 +42,20 @@ class FrameJustWorks {
             this.startServer();
         })
     }
-	
-	register = () => {
+
+    register = () => {
         const payload = {
             'CLIENT_ID': this.configuration.credentials,
         }
-		this.socket.emit("register", payload, () => {
-			console.log('Registered with server');
-		})
-	}
+        this.socket.emit("register", payload, () => {
+            console.log('Registered with server');
+        })
+    }
 
     startServer = () => {
-         this.socket = require('socket.io-client')(socketUrl, {});
+        this.socket = require('socket.io-client')(socketUrl, {});
 
-        this.socket.on('connect',this.register);
+        this.socket.on('connect', this.register);
         this.socket.on('draw', (data) => {
             utils.writeToJsonFile(data)
         });
@@ -58,15 +63,15 @@ class FrameJustWorks {
         console.log("_________________________________________________________________________________________");
     }
 
-    registerSensor = (sensorId,type) => {
-        this.pipeHandler.createPipe(sensorId).then(({exitCode,pipeId}) => {
+    registerSensor = (sensorId, type) => {
+        this.pipeHandler.createPipe(sensorId).then(({exitCode, pipeId}) => {
             this.pipeHandler.onPipeData(pipeId, (data) => {
                 console.log('Received data from pipe: \n', JSON.parse(data.toString()))
 
-                const payload = this.packageData(data,type)
+                const payload = this.packageData(data, type)
 
                 this.socket.volatile.emit("data", payload, (r) => {
-                    if(r) console.log(r);
+                    if (r) console.log(r);
                     console.log('Data sent to server');
                 });
             })
@@ -74,7 +79,7 @@ class FrameJustWorks {
     }
 
     // There is no need to run JSON.stringify() on objects as it will be done for you by the socket.emit method
-    packageData = (data,type) => {
+    packageData = (data, type) => {
         return {
             'CLIENT_ID': this.configuration.credentials,
             timestamp: new Date().getTime(),
