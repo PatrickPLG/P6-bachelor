@@ -166,3 +166,5 @@ client/renderer/DisplayClient/instructions.json
 !/backend/p6.db
 !/client/renderer/DisplayClient/instructions.json
 !/backend/p6.db
+
+client/renderer/DisplayClient/instructions.json
