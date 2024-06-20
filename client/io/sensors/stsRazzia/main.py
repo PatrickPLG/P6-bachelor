@@ -18,25 +18,36 @@ PERSONS = [
         'name': 'Daniel',
         'username': 'M05f3t',
         'imagePath': './faces/Daniel.jpeg',
-        'imageName': 'Daniel.jpeg'
+        'imageName': 'Daniel.jpeg',
+        'specialMember': False
     },
     {
         'name': 'Peter',
         'username': 'pellef',
         'imagePath': './faces/Peter.png',
-        'imageName': 'Peter.png'
+        'imageName': 'Peter.png',
+        'specialMember': False
     },
     {
         'name': 'Patrick',
         'username': 'PatrickPLG',
         'imagePath': './faces/Patrick.png',
-        'imageName': 'Patrick.png'
+        'imageName': 'Patrick.png',
+        'specialMember': False
     },
     {
         'name': 'Gustas',
         'username': 'gj',
         'imagePath': './faces/Gustas.png',
-        'imageName': 'Gustas.png'
+        'imageName': 'Gustas.png',
+        'specialMember': False
+    },
+    {
+        'name': 'Josva',
+        'username': '',
+        'imagePath': './faces/Josva.jpg',
+        'imageName': 'Josva.jpg',
+        'specialMember': True
     }
 ]
 
