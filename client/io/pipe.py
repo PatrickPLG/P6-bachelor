@@ -8,7 +8,7 @@ load_dotenv()
 PIPE = 'SensorOne'
 
 # config
-printEveryXSeconds = 3
+printEveryXSeconds = 1
 printDataTransmitted = True
 
 # time since last console print

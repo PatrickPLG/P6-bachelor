@@ -126,6 +126,19 @@ class dbHandler {
             );
         });
     }
+
+    async getSavedData(dataName) {
+        return new Promise((resolve, reject) => {
+            this.db.get(`SELECT Data FROM SavedData WHERE DataName = ?`, [dataName], (err, row) => {
+                if (err) {
+                    console.error(err.message);
+                    reject(err);
+                } else {
+                    resolve(row);
+                }
+            });
+        });
+    }
     
 
     async deleteSavedData(dataName) {

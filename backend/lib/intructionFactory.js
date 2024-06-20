@@ -28,8 +28,8 @@ class instructionFactory {
         this.instructions.push(new EllipseInstruction(color, x, y, width, height));
     }
 
-    addText(color, x, y, size, text) {
-        this.instructions.push(new TextInstruction(color, x, y, size, text));
+    addText(color, x, y, size, text,width,height) {
+        this.instructions.push(new TextInstruction(color, x, y, size, text,width,height));
     }
 
     addImage(base64, x, y, width, height) {
@@ -108,15 +108,21 @@ class TextInstruction {
     position = {x: 0, y: 0};
     size = 0;
     text = '';
+    width = 0;
+    height = 0;
     xAlign = 0;
     yAlign = 0;
+    textStyle= "normal";
 
-    constructor(color, x,y, size, text,align) {
+    constructor(color, x,y, size, text, width,height) {
         this.color = color;
         this.position.x = x;
         this.position.y = y;
         this.size = size;
         this.text = text;
+        this.width = width;
+        this.height = height;
+
     }
 }
 
